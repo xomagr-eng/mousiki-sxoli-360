@@ -1,0 +1,2420 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>ΜΟΥΣΙΚΗ ΣΧΟΛΗ 360°</title>
+<meta name="theme-color" content="#e30613">
+<meta name="application-name" content="Μουσική Σχολή 360°">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Μουσική Σχολή">
+<meta name="description" content="Μάθε πιάνο & κιθάρα σαν επαγγελματίας — offline μουσική σχολή με πραγματικό ήχο.">
+<link rel="manifest" id="manifestLink" href="manifest.webmanifest">
+<link rel="apple-touch-icon" id="appleIcon" href="icons/apple-touch-icon.png">
+<style>
+  :root{
+    --bg:#0e0f12; --bg2:#15171c; --card:#1b1e25; --card2:#22262f;
+    --line:#2b303b; --txt:#f2f3f5; --muted:#9aa3b2;
+    --red:#e30613; --red2:#ff2b3b; --redsoft:#2a1113;
+    --gold:#e8b34a; --gold2:#ffcf6b; --ok:#e8b34a; --warn:#f0a838; --bad:#ff4d5e;
+    --shadow:0 10px 30px rgba(0,0,0,.45);
+    --r:14px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:radial-gradient(1200px 600px at 50% -200px,#1a1c22,var(--bg)) fixed;
+    color:var(--txt);
+    font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;
+    line-height:1.5; -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--red2)}
+  .wrap{max-width:1180px;margin:0 auto;padding:16px 14px 90px}
+  @supports(padding:max(0px)){
+    .wrap{padding-left:max(14px,env(safe-area-inset-left));padding-right:max(14px,env(safe-area-inset-right));
+      padding-top:max(16px,env(safe-area-inset-top));padding-bottom:max(90px,calc(env(safe-area-inset-bottom) + 40px))}
+  }
+  .audio-badge.fs{margin-left:8px}
+
+  header.top{
+    display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+    padding:16px 20px;margin-bottom:16px;border-radius:var(--r);
+    background:linear-gradient(135deg,#20242d,#15171c);
+    border:1px solid var(--line);box-shadow:var(--shadow);
+    border-left:5px solid var(--red);
+  }
+  .logo{
+    width:52px;height:52px;border-radius:13px;flex:0 0 auto;
+    background:linear-gradient(145deg,var(--red),#8f0009);
+    display:grid;place-items:center;font-size:26px;
+    box-shadow:0 6px 18px rgba(227,6,19,.4);
+  }
+  header.top h1{font-size:22px;margin:0;letter-spacing:.5px}
+  header.top p{margin:2px 0 0;color:var(--muted);font-size:13px}
+  header.top .spacer{flex:1}
+  .audio-badge{font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:20px;padding:6px 12px;background:var(--bg2);cursor:pointer}
+  .audio-badge.on{color:var(--gold2);border-color:var(--gold)}
+  .audio-badge.install{color:#241a05;background:linear-gradient(135deg,var(--gold),#b9852a);border-color:transparent;font-weight:800;box-shadow:0 4px 14px rgba(232,179,74,.35)}
+  header.top .copyr{margin:4px 0 0;font-size:12px;font-weight:800;color:var(--gold2);letter-spacing:.3px}
+
+  /* NAV */
+  nav.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+  nav.tabs button{
+    background:var(--card);border:1px solid var(--line);color:var(--muted);
+    padding:10px 15px;border-radius:11px;font-size:13.5px;font-weight:700;cursor:pointer;
+    display:flex;align-items:center;gap:7px;box-shadow:none;transition:.15s;
+  }
+  nav.tabs button .i{font-size:16px}
+  nav.tabs button:hover{border-color:var(--red);color:var(--txt);transform:none}
+  nav.tabs button.active{background:linear-gradient(135deg,var(--red),#a30009);color:#fff;border-color:transparent;box-shadow:0 6px 16px rgba(227,6,19,.35)}
+
+  .panel{display:none;animation:fade .25s ease}
+  .panel.show{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  .card{
+    background:var(--card);border:1px solid var(--line);
+    border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden;margin-bottom:16px;
+  }
+  .card > h2{
+    font-size:15px;margin:0;padding:14px 18px;
+    background:var(--card2);border-bottom:1px solid var(--line);
+    display:flex;align-items:center;gap:9px;letter-spacing:.3px;
+  }
+  .card > h2 .i{color:var(--gold2)}
+  .card .body{padding:16px 18px}
+  h3{font-size:15px;margin:18px 0 8px;color:var(--gold2)}
+  h4{font-size:14px;margin:14px 0 6px;color:var(--txt)}
+  p.lead{color:var(--muted);font-size:14px;margin:0 0 12px}
+
+  button{
+    cursor:pointer;font-family:inherit;font-size:14px;font-weight:700;
+    border:none;border-radius:11px;padding:11px 16px;color:#fff;
+    background:linear-gradient(135deg,var(--red),#a30009);
+    box-shadow:0 6px 16px rgba(227,6,19,.35);transition:.15s;
+  }
+  button:hover{transform:translateY(-1px);filter:brightness(1.08)}
+  button.ghost{background:var(--card2);border:1px solid var(--line);box-shadow:none;color:var(--txt)}
+  button.ghost:hover{border-color:var(--red)}
+  button.gold{background:linear-gradient(135deg,var(--gold),#b9852a);box-shadow:0 6px 16px rgba(232,179,74,.3);color:#241a05}
+  button.sm{padding:7px 12px;font-size:12.5px;border-radius:9px}
+  .btnrow{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
+
+  select,input[type=text],input[type=number]{
+    padding:10px 12px;border-radius:10px;background:var(--bg2);
+    border:1px solid var(--line);color:var(--txt);font-size:14px;font-family:inherit;
+  }
+  select:focus,input:focus{outline:none;border-color:var(--red)}
+  label.fld{display:block;font-size:12px;color:var(--muted);margin-bottom:5px;font-weight:600;text-transform:uppercase;letter-spacing:.4px}
+
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 14px}
+  .chip{background:var(--bg2);border:1px solid var(--line);color:var(--muted);padding:8px 13px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer}
+  .chip:hover{border-color:var(--red);color:var(--txt)}
+  .chip.active{background:var(--red);color:#fff;border-color:transparent}
+  .chip.gold.active{background:var(--gold);color:#241a05}
+
+  /* ===== PIANO ===== */
+  .piano-wrap{overflow-x:auto;padding:6px 2px 14px;-webkit-overflow-scrolling:touch}
+  .piano{position:relative;display:flex;height:190px;min-width:640px;user-select:none;margin:0 auto}
+  .wkey{position:relative;flex:1 0 40px;min-width:40px;background:linear-gradient(180deg,#fbfbfb,#e9e9ec);
+    border:1px solid #c3c6cc;border-radius:0 0 7px 7px;box-shadow:inset 0 -6px 8px rgba(0,0,0,.08);
+    display:flex;align-items:flex-end;justify-content:center;padding-bottom:8px;cursor:pointer;transition:.05s}
+  .wkey:active,.wkey.dn{background:linear-gradient(180deg,#ececf0,#d3d3da)}
+  .wkey.hl{background:linear-gradient(180deg,#ffd0d3,#ff9ba1)}
+  .wkey.root{background:linear-gradient(180deg,#ffb14a,#f0972a)}
+  .wkey .lbl{font-size:10px;color:#7a7d85;font-weight:700;pointer-events:none}
+  .wkey .kb{font-size:9px;color:#b3b6bd;pointer-events:none;position:absolute;bottom:22px}
+  .bkey{position:absolute;top:0;width:26px;height:118px;background:linear-gradient(180deg,#2a2d33,#0b0c0e);
+    border:1px solid #000;border-radius:0 0 5px 5px;z-index:3;cursor:pointer;box-shadow:0 4px 6px rgba(0,0,0,.5);
+    display:flex;align-items:flex-end;justify-content:center;padding-bottom:6px;transition:.05s}
+  .bkey:active,.bkey.dn{background:linear-gradient(180deg,#3a3d44,#151619)}
+  .bkey.hl{background:linear-gradient(180deg,#ff6b73,#c11)}
+  .bkey.root{background:linear-gradient(180deg,#ffb14a,#e07d10)}
+  .bkey .lbl{font-size:8px;color:#d9dbe0;font-weight:700;pointer-events:none}
+
+  /* ===== GUITAR ===== */
+  .fret-wrap{overflow-x:auto;padding:6px 2px 14px}
+  .fretboard{min-width:720px;border-collapse:collapse;margin:0 auto;width:100%}
+  .fretboard td,.fretboard th{border:1px solid var(--line);text-align:center;position:relative}
+  .fretboard th{font-size:11px;color:var(--muted);padding:5px 2px;font-weight:700;background:var(--card2)}
+  .fretboard .strname{background:var(--card2);font-weight:800;color:var(--gold2);width:52px;font-size:12px}
+  .fretboard td.cell{height:34px;background:linear-gradient(180deg,#241a12,#1c140d);cursor:pointer}
+  .fretboard td.cell:hover{background:#33251a}
+  .fretboard td.open{background:var(--card2);width:44px;cursor:pointer}
+  .fretboard td.open:hover{background:#33251a}
+  .dot{width:22px;height:22px;border-radius:50%;margin:0 auto;display:grid;place-items:center;font-size:10px;font-weight:800;color:#fff}
+  .dot.play{background:var(--red)}
+  .dot.hl{background:var(--red)}
+  .dot.root{background:var(--gold);color:#241a05}
+  .fretmark{color:#5a4a38;font-size:11px}
+  .nutcol{border-right:4px solid #cfd2d8 !important}
+
+  /* tables / theory */
+  table.data{width:100%;border-collapse:collapse;font-size:13.5px;margin:8px 0}
+  table.data th,table.data td{border:1px solid var(--line);padding:8px 10px;text-align:left}
+  table.data th{background:var(--card2);color:var(--gold2);font-size:12px;text-transform:uppercase;letter-spacing:.4px}
+  table.data tr:nth-child(even) td{background:var(--bg2)}
+  .kv{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:14px;margin:8px 0}
+  .kv b{color:var(--gold2)}
+  ul.tick{list-style:none;padding-left:0;margin:8px 0}
+  ul.tick li{padding:5px 0 5px 26px;position:relative;font-size:14px}
+  ul.tick li:before{content:"♪";position:absolute;left:0;color:var(--red2);font-weight:800}
+  .note{background:var(--redsoft);border:1px solid #5a1a1e;border-radius:10px;padding:11px 14px;font-size:13px;color:#ffd7d9;margin:12px 0}
+  .note b{color:#fff}
+  .tip{background:#241d0f;border:1px solid #6a4d17;border-radius:10px;padding:11px 14px;font-size:13px;color:#ffe7bd;margin:12px 0}
+  .tip b{color:var(--gold2)}
+
+  /* grid cols */
+  .cols{display:grid;grid-template-columns:1fr;gap:16px}
+  @media(min-width:820px){.cols.two{grid-template-columns:1fr 1fr}}
+  @media(min-width:820px){.cols.side{grid-template-columns:300px 1fr}}
+
+  /* dashboard cards */
+  .home-grid{display:grid;grid-template-columns:1fr;gap:14px}
+  @media(min-width:640px){.home-grid{grid-template-columns:1fr 1fr}}
+  @media(min-width:960px){.home-grid{grid-template-columns:1fr 1fr 1fr}}
+  .hc{background:linear-gradient(150deg,var(--card2),var(--card));border:1px solid var(--line);border-radius:var(--r);padding:18px;cursor:pointer;transition:.15s;border-left:4px solid var(--red)}
+  .hc:hover{transform:translateY(-3px);border-left-color:var(--gold)}
+  .hc .ic{font-size:30px;margin-bottom:8px}
+  .hc h3{margin:0 0 4px;color:var(--txt)}
+  .hc p{margin:0;color:var(--muted);font-size:13px}
+
+  .kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:6px 0 4px}
+  @media(min-width:560px){.kpis{grid-template-columns:repeat(4,1fr)}}
+  .kpi{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:13px 14px}
+  .kpi .l{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+  .kpi .v{font-size:22px;font-weight:800;margin-top:3px}
+  .kpi .v small{font-size:12px;color:var(--muted);font-weight:600}
+
+  /* lessons */
+  .lesson-list{display:flex;flex-direction:column;gap:8px}
+  .lrow{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--bg2);border:1px solid var(--line);border-radius:11px;cursor:pointer;transition:.12s}
+  .lrow:hover{border-color:var(--red);transform:translateX(3px)}
+  .lrow.done{border-left:4px solid var(--gold)}
+  .lrow .num{width:30px;height:30px;flex:0 0 auto;border-radius:8px;background:var(--card2);display:grid;place-items:center;font-weight:800;font-size:13px;color:var(--gold2)}
+  .lrow.done .num{background:var(--gold);color:#241a05}
+  .lrow .meta{flex:1;min-width:0}
+  .lrow .meta b{font-size:14px;display:block}
+  .lrow .meta span{font-size:12px;color:var(--muted)}
+  .lrow .badge{font-size:10px;font-weight:800;padding:3px 8px;border-radius:20px;text-transform:uppercase;letter-spacing:.3px}
+  .badge.beg{background:#123a24;color:#7fe0a6}
+  .badge.int{background:#3a2e12;color:var(--gold2)}
+  .badge.adv{background:var(--redsoft);color:#ffb3b8}
+
+  .progress-bar{height:10px;background:var(--bg2);border-radius:20px;overflow:hidden;border:1px solid var(--line);margin:6px 0}
+  .progress-bar span{display:block;height:100%;background:linear-gradient(90deg,var(--red),var(--gold));border-radius:20px;transition:.4s}
+
+  /* metronome */
+  .metro-display{text-align:center;padding:20px}
+  .bpm-num{font-size:64px;font-weight:800;line-height:1;color:var(--gold2)}
+  .beats{display:flex;gap:10px;justify-content:center;margin:18px 0}
+  .beat{width:26px;height:26px;border-radius:50%;background:var(--card2);border:1px solid var(--line)}
+  .beat.on{background:var(--red);box-shadow:0 0 16px var(--red2);transform:scale(1.25)}
+  .beat.accent.on{background:var(--gold);box-shadow:0 0 16px var(--gold2)}
+  input[type=range]{width:100%;accent-color:var(--red)}
+
+  /* quiz */
+  .quiz-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+  @media(min-width:560px){.quiz-opts{grid-template-columns:repeat(4,1fr)}}
+  .qopt{padding:16px 10px;text-align:center;background:var(--card2);border:1px solid var(--line);border-radius:11px;cursor:pointer;font-weight:700;font-size:15px;color:var(--txt)}
+  .qopt:hover{border-color:var(--red)}
+  .qopt.correct{background:#3a2e12;border-color:var(--gold);color:var(--gold2)}
+  .qopt.wrong{background:var(--redsoft);border-color:var(--red);color:#ffb3b8}
+
+  .staff-box{background:#fff;border-radius:10px;padding:10px;overflow-x:auto}
+  .badge-inline{display:inline-block;font-size:11px;font-weight:800;padding:2px 8px;border-radius:6px;background:var(--card2);color:var(--gold2);border:1px solid var(--line)}
+  /* songwriter */
+  .songchart{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:14px 0;line-height:2.6;font-size:15px;overflow-x:auto}
+  .song-sec{margin-bottom:16px}
+  .song-label{font-size:12px;font-weight:800;color:var(--gold2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
+  .song-line{white-space:pre-wrap}
+  .chordtok{display:inline-block;color:var(--red2);font-weight:800;font-size:13px;background:var(--redsoft);border:1px solid #5a1a1e;border-radius:6px;padding:0 6px;margin:0 2px 0 0;vertical-align:baseline;transform:translateY(-2px)}
+  .chordtok.playing{background:var(--gold);color:#241a05;border-color:var(--gold);box-shadow:0 0 12px var(--gold2)}
+  .lyrseg{color:var(--txt)}
+  /* recorder */
+  .rec-bar{margin-top:14px;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+  .rec-bar .rr{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .rec-dot{width:11px;height:11px;border-radius:50%;background:var(--muted);flex:0 0 auto}
+  .rec-dot.live{background:var(--red);box-shadow:0 0 10px var(--red2);animation:blink 1s infinite}
+  @keyframes blink{50%{opacity:.3}}
+  .rec-status{font-size:12px;color:var(--muted)}
+  .rec-list{margin-top:10px;display:flex;flex-direction:column;gap:6px}
+  .rec-item{display:flex;align-items:center;gap:10px;background:var(--card2);border:1px solid var(--line);border-radius:9px;padding:8px 11px;font-size:13px}
+  .rec-item .rn{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  /* videos */
+  .vid-grid{display:grid;grid-template-columns:1fr;gap:14px}
+  @media(min-width:720px){.vid-grid{grid-template-columns:1fr 1fr}}
+  .vid-card{background:var(--card2);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .vid-card .vframe{position:relative;width:100%;padding-top:56.25%;background:#000}
+  .vid-card .vframe iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
+  .vid-card .vmeta{padding:10px 12px;display:flex;align-items:center;gap:8px}
+  .vid-card .vmeta b{flex:1;font-size:13.5px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .vcat{font-size:10px;font-weight:800;padding:3px 8px;border-radius:20px;background:var(--redsoft);color:#ffb3b8;text-transform:uppercase}
+  /* analyze */
+  .an-chord{display:grid;grid-template-columns:1fr;gap:14px;margin:12px 0}
+  @media(min-width:720px){.an-chord{grid-template-columns:1fr 1fr}}
+  .an-box{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+  .an-box h4{margin:0 0 8px;color:var(--gold2)}
+  .an-chip{display:inline-block;background:var(--redsoft);border:1px solid #5a1a1e;color:#ffd7d9;font-weight:800;border-radius:8px;padding:3px 9px;margin:0 4px 6px 0;font-size:13px;cursor:pointer}
+  .an-chip:hover{border-color:var(--red)}
+  .footer{text-align:center;color:var(--muted);font-size:12px;margin-top:24px}
+  code.k{background:var(--card2);border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:12px;color:var(--gold2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="logo">🎵</div>
+    <div>
+      <h1>ΜΟΥΣΙΚΗ ΣΧΟΛΗ 360°</h1>
+      <p>Πιάνο &amp; Κιθάρα — μάθε από το μηδέν έως επαγγελματίας · offline · με πραγματικό ήχο</p>
+      <p class="copyr">© by Chronis Makris</p>
+    </div>
+    <div class="spacer"></div>
+    <div class="audio-badge install" id="installBtn" title="Εγκατάσταση εφαρμογής" style="display:none">⬇️ Εγκατάσταση εφαρμογής</div>
+    <div class="audio-badge" id="audioBadge" title="Ενεργοποίηση ήχου">🔈 Πάτησε για ήχο</div>
+    <div class="audio-badge fs" id="fsBtn" title="Πλήρης οθόνη">⛶ Πλήρης οθόνη</div>
+  </header>
+
+  <nav class="tabs" id="tabs">
+    <button data-tab="home" class="active"><span class="i">🏠</span>Αρχική</button>
+    <button data-tab="piano"><span class="i">🎹</span>Πιάνο</button>
+    <button data-tab="guitar"><span class="i">🎸</span>Κιθάρα</button>
+    <button data-tab="theory"><span class="i">📖</span>Θεωρία</button>
+    <button data-tab="chords"><span class="i">🎼</span>Συγχορδίες</button>
+    <button data-tab="scales"><span class="i">🪜</span>Κλίμακες</button>
+    <button data-tab="lessons"><span class="i">🎓</span>Μαθήματα</button>
+    <button data-tab="songwriter"><span class="i">🎤</span>Σύνθεση</button>
+    <button data-tab="analyze"><span class="i">🔍</span>Ανάλυση</button>
+    <button data-tab="videos"><span class="i">📺</span>Βίντεο</button>
+    <button data-tab="ear"><span class="i">👂</span>Ασκήσεις</button>
+    <button data-tab="metro"><span class="i">⏱️</span>Μετρονόμος</button>
+  </nav>
+
+  <!-- ============ HOME ============ -->
+  <section class="panel show" id="home">
+    <div class="card"><div class="body">
+      <p class="lead">Καλωσήρθες! Αυτή είναι η προσωπική σου μουσική σχολή. Διάλεξε όργανο και ξεκίνα από τα δομημένα μαθήματα, ή εξερεύνησε ελεύθερα το πιάνο και την κιθάρα. Κάθε νότα ακούγεται στα αλήθεια — <b>πάτησε πρώτα «🔈 Πάτησε για ήχο»</b> πάνω δεξιά.</p>
+      <div class="kpis">
+        <div class="kpi"><div class="l">Μαθήματα</div><div class="v" id="kpiLessons">0<small>/0</small></div></div>
+        <div class="kpi"><div class="l">Πρόοδος</div><div class="v" id="kpiPct">0<small>%</small></div></div>
+        <div class="kpi"><div class="l">Πόντοι ασκήσεων</div><div class="v" id="kpiScore">0</div></div>
+        <div class="kpi"><div class="l">Σερί σωστών</div><div class="v" id="kpiStreak">0</div></div>
+      </div>
+      <div class="progress-bar"><span id="homeBar" style="width:0%"></span></div>
+    </div></div>
+
+    <div class="home-grid" id="homeGrid"></div>
+
+    <div class="card"><div class="body">
+      <h3>Πώς να το χρησιμοποιήσεις σαν πραγματικός μαθητής</h3>
+      <ul class="tick">
+        <li><b>Ξεκίνα από τα «Μαθήματα»</b> — είναι σε σειρά, από αρχάριο σε προχωρημένο, χωριστά για πιάνο και κιθάρα.</li>
+        <li><b>Κάθε μέρα 15–20 λεπτά</b> είναι καλύτερα από 2 ώρες μία φορά την εβδομάδα. Η συνέπεια χτίζει μνήμη στα δάχτυλα.</li>
+        <li><b>Χρησιμοποίησε τον μετρονόμο</b> σε κάθε άσκηση — ξεκίνα αργά (60 BPM) και ανέβασε ταχύτητα μόνο όταν παίζεις καθαρά.</li>
+        <li><b>Κάνε ασκήσεις ακοής</b> τακτικά· το «μουσικό αυτί» είναι δεξιότητα που εκπαιδεύεται.</li>
+      </ul>
+    </div></div>
+  </section>
+
+  <!-- ============ PIANO ============ -->
+  <section class="panel" id="piano">
+    <div class="card">
+      <h2><span class="i">🎹</span> Διαδραστικό Πιάνο</h2>
+      <div class="body">
+        <p class="lead">Πάτησε τα πλήκτρα με το ποντίκι/δάχτυλο ή με το πληκτρολόγιο. Επίλεξε συγχορδία ή κλίμακα για να φωτιστούν οι νότες.</p>
+        <div class="btnrow">
+          <div><label class="fld">Οκτάβες</label>
+            <select id="pOct"><option value="2">2 οκτάβες</option><option value="3" selected>3 οκτάβες</option><option value="4">4 οκτάβες</option></select>
+          </div>
+          <div><label class="fld">Αρχική οκτάβα</label>
+            <select id="pStart"><option value="3">C3</option><option value="4" selected>C4 (μεσαίο ντο)</option><option value="5">C5</option></select>
+          </div>
+          <div><label class="fld">Ονόματα νοτών</label>
+            <select id="pNames"><option value="latin">Ντο–Ρε–Μι…</option><option value="letter">C–D–E…</option><option value="off">Χωρίς</option></select>
+          </div>
+          <div><label class="fld">Δείξε</label>
+            <select id="pShow">
+              <option value="none">— Τίποτα —</option>
+              <optgroup label="Συγχορδίες (C)"><option value="chord:maj">Ντο Ματζόρε (C)</option><option value="chord:min">Ντο Μινόρε (Cm)</option><option value="chord:maj7">Cmaj7</option><option value="chord:dom7">C7</option></optgroup>
+              <optgroup label="Κλίμακες (C)"><option value="scale:major">Μείζονα (Do major)</option><option value="scale:minor">Ελάσσονα φυσική</option><option value="scale:pentaMaj">Πεντατονική μείζονα</option><option value="scale:pentaMin">Πεντατονική ελάσσονα</option><option value="scale:blues">Blues</option></optgroup>
+            </select>
+          </div>
+        </div>
+        <div class="piano-wrap"><div class="piano" id="pianoEl"></div></div>
+        <div class="tip"><b>Πληκτρολόγιο:</b> <code class="k">A W S E D F T G Y H U J</code> = μία οκτάβα (λευκά: A S D F G H J, μαύρα: W E T Y U). Το <code class="k">Z</code> / <code class="k">X</code> κατεβάζει/ανεβάζει οκτάβα.</div>
+        <div id="pInfo" class="note" style="display:none"></div>
+        <div class="rec-bar" id="pianoRec"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ GUITAR ============ -->
+  <section class="panel" id="guitar">
+    <div class="card">
+      <h2><span class="i">🎸</span> Διαδραστική Κιθάρα (ταστιέρα)</h2>
+      <div class="body">
+        <p class="lead">Κούρδισμα Mi (EADGBE). Πάτησε σε ένα τάστο για να ακούσεις τη νότα. Επίλεξε συγχορδία για να δεις το «πάτημα» (δαχτυλιές).</p>
+        <div class="btnrow">
+          <div><label class="fld">Τάστα</label>
+            <select id="gFrets"><option value="12" selected>0–12</option><option value="15">0–15</option><option value="5">0–5 (αρχάριοι)</option></select>
+          </div>
+          <div><label class="fld">Ονόματα</label>
+            <select id="gNames"><option value="latin">Ντο–Ρε–Μι…</option><option value="letter" selected>C–D–E…</option></select>
+          </div>
+          <div><label class="fld">Δείξε συγχορδία</label>
+            <select id="gChord"><option value="none">— Ελεύθερο —</option></select>
+          </div>
+          <div style="align-self:flex-end"><button class="gold sm" id="gStrum">🎸 Παίξε τη συγχορδία</button></div>
+        </div>
+        <div class="fret-wrap"><table class="fretboard" id="fretEl"></table></div>
+        <div id="gInfo" class="note" style="display:none"></div>
+        <div class="tip"><b>Συμβουλή:</b> Το κόκκινο = νότα της συγχορδίας, το <b>χρυσό</b> = θεμέλιος (root). Το «✕» πάνω από χορδή σημαίνει «μην την παίξεις», το «○» σημαίνει «ανοιχτή χορδή».</div>
+        <div class="rec-bar" id="guitarRec"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ THEORY ============ -->
+  <section class="panel" id="theory">
+    <div class="card">
+      <h2><span class="i">📖</span> Θεωρία Μουσικής</h2>
+      <div class="body">
+        <div class="chips" id="theoryChips"></div>
+        <div id="theoryContent"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CHORDS ============ -->
+  <section class="panel" id="chords">
+    <div class="card">
+      <h2><span class="i">🎼</span> Βιβλιοθήκη Συγχορδιών</h2>
+      <div class="body">
+        <div class="chips">
+          <span class="chip active" data-cinst="guitar">🎸 Κιθάρα</span>
+          <span class="chip" data-cinst="piano">🎹 Πιάνο</span>
+        </div>
+        <div class="chips" id="chordRoots"></div>
+        <div class="chips" id="chordTypes"></div>
+        <div id="chordView"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SCALES ============ -->
+  <section class="panel" id="scales">
+    <div class="card">
+      <h2><span class="i">🪜</span> Κλίμακες</h2>
+      <div class="body">
+        <div class="btnrow">
+          <div><label class="fld">Θεμέλιος</label><select id="scRoot"></select></div>
+          <div><label class="fld">Τύπος κλίμακας</label><select id="scType"></select></div>
+          <div style="align-self:flex-end"><button class="gold sm" id="scPlay">▶ Παίξε ανιόντα/κατιόντα</button></div>
+        </div>
+        <div id="scInfo"></div>
+        <h4>Στο πιάνο</h4>
+        <div class="piano-wrap"><div class="piano" id="scPiano"></div></div>
+        <div id="scNotes" class="tip"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ LESSONS ============ -->
+  <section class="panel" id="lessons">
+    <div class="card">
+      <h2><span class="i">🎓</span> Δομημένα Μαθήματα</h2>
+      <div class="body">
+        <div class="chips">
+          <span class="chip active" data-linst="piano">🎹 Πιάνο</span>
+          <span class="chip" data-linst="guitar">🎸 Κιθάρα</span>
+        </div>
+        <div class="progress-bar"><span id="lessonBar" style="width:0%"></span></div>
+        <p class="lead" id="lessonProgTxt"></p>
+        <div class="lesson-list" id="lessonList"></div>
+      </div>
+    </div>
+    <div class="card" id="lessonDetailCard" style="display:none">
+      <h2><span class="i">📝</span> <span id="lessonTitle"></span></h2>
+      <div class="body">
+        <div id="lessonBody"></div>
+        <div class="btnrow">
+          <button class="gold" id="lessonDone">✓ Ολοκλήρωσα το μάθημα</button>
+          <button class="ghost" id="lessonBack">← Πίσω στη λίστα</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SONGWRITER ============ -->
+  <section class="panel" id="songwriter">
+    <div class="card">
+      <h2><span class="i">🎤</span> Σύνθεση Τραγουδιού</h2>
+      <div class="body">
+        <div class="chips">
+          <span class="chip active" data-swmode="auto">✨ Αυτόματη σύνθεση</span>
+          <span class="chip" data-swmode="custom">✍️ Γράψε το δικό σου</span>
+          <span class="chip" data-swmode="saved">💾 Οι συνθέσεις μου</span>
+        </div>
+
+        <!-- AUTO -->
+        <div id="swAuto">
+          <p class="lead">Γράψε ή επικόλλησε τους στίχους σου (μία φράση ανά γραμμή, άφησε κενή γραμμή για νέα στροφή). Διάλεξε ύφος και τονικότητα και θα δημιουργήσω τραγούδι με συγχορδίες που μπορείς να ακούσεις.</p>
+          <textarea id="swLyrics" rows="7" style="width:100%;padding:12px;border-radius:10px;background:var(--bg2);border:1px solid var(--line);color:var(--txt);font-size:14px;font-family:inherit;resize:vertical" placeholder="π.χ.
+Ήρθες ξανά μέσα στη νύχτα
+σαν αστέρι που έσβησε παλιά
+κι όμως λάμπεις μες στα μάτια μου
+δε σε ξεχνώ, δε φεύγεις πια"></textarea>
+          <div class="btnrow" style="align-items:flex-end">
+            <div><label class="fld">Ύφος</label><select id="swStyle"></select></div>
+            <div><label class="fld">Τονικότητα</label><select id="swKey"></select></div>
+            <div><label class="fld">Όργανο</label><select id="swInst"><option value="guitar">🎸 Κιθάρα</option><option value="piano">🎹 Πιάνο</option></select></div>
+            <button class="gold" id="swGen">✨ Δημιούργησε τραγούδι</button>
+          </div>
+        </div>
+
+        <!-- CUSTOM -->
+        <div id="swCustom" style="display:none">
+          <p class="lead">Γράψε στίχους και βάλε συγχορδίες μέσα σε αγκύλες <code class="k">[C]</code> ακριβώς πριν από τη συλλαβή που αλλάζει η συγχορδία. Παράδειγμα:</p>
+          <div class="tip" style="font-family:monospace;white-space:pre-wrap">[Am]Ήρθες ξανά μέσα στη [F]νύχτα
+[C]σαν αστέρι που έσβησε πα[G]λιά</div>
+          <textarea id="swCustomText" rows="8" style="width:100%;padding:12px;border-radius:10px;background:var(--bg2);border:1px solid var(--line);color:var(--txt);font-size:14px;font-family:'Consolas',monospace;resize:vertical" placeholder="[Am]Ήρθες ξανά μέσα στη [F]νύχτα
+[C]σαν αστέρι που έσβησε πα[G]λιά"></textarea>
+          <div class="btnrow" style="align-items:flex-end">
+            <div><label class="fld">Τίτλος</label><input type="text" id="swTitle" placeholder="Ο τίτλος μου" style="width:180px"></div>
+            <div><label class="fld">Ταχύτητα (BPM)</label><input type="number" id="swBpm" value="90" min="40" max="200" style="width:90px"></div>
+            <div><label class="fld">Ρυθμός</label><select id="swFeel"><option value="strum">Πενιές</option><option value="arpeggio">Αρπισμός</option><option value="rock">Ροκ</option><option value="reggae">Ρέγκε</option><option value="jazz">Τζαζ (swing)</option><option value="waltz">Βαλς 3/4</option><option value="bossa">Μπόσα</option><option value="funk">Φανκ 16α</option><option value="blues">Μπλουζ shuffle</option></select></div>
+            <div><label class="fld">Όργανο</label><select id="swInst2"><option value="guitar">🎸 Κιθάρα</option><option value="piano">🎹 Πιάνο</option></select></div>
+            <button class="gold" id="swRender">▶ Απόδοση &amp; Ακρόαση</button>
+            <button class="ghost sm" id="swTrDown" title="Χαμήλωσε τονικότητα">♭ −½</button>
+            <button class="ghost sm" id="swTrUp" title="Ανέβασε τονικότητα">♯ +½</button>
+            <button class="ghost" id="swSave">💾 Αποθήκευση</button>
+          </div>
+        </div>
+
+        <!-- SAVED -->
+        <div id="swSaved" style="display:none">
+          <p class="lead">Οι αποθηκευμένες συνθέσεις σου (τοπικά στη συσκευή).</p>
+          <div id="swSavedList" class="lesson-list"></div>
+        </div>
+
+        <div id="swOutput" style="margin-top:16px"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ANALYZE ============ -->
+  <section class="panel" id="analyze">
+    <div class="card">
+      <h2><span class="i">🔍</span> Ανάλυση Τραγουδιού — Πώς θα το παίξω</h2>
+      <div class="body">
+        <p class="lead">Επικόλλησε τις <b>συγχορδίες</b> ενός τραγουδιού (χωρισμένες με κενό/κόμμα, π.χ. <code class="k">Am F C G</code>) ή ολόκληρους στίχους σε μορφή <code class="k">[Am]...[F]...</code>. Θα βρω την τονικότητα και θα σου εξηγήσω βήμα-βήμα πώς παίζεται σε <b>πιάνο</b> και <b>κιθάρα</b>.</p>
+        <textarea id="anInput" rows="4" style="width:100%;padding:12px;border-radius:10px;background:var(--bg2);border:1px solid var(--line);color:var(--txt);font-size:14px;font-family:'Consolas',monospace;resize:vertical" placeholder="Am F C G   ή   [Am]Ήρθες [F]ξανά [C]μέσα στη [G]νύχτα"></textarea>
+        <div class="btnrow"><button class="gold" id="anBtn">🔍 Ανάλυσε</button>
+          <button class="ghost sm" data-anex="Am F C G">π.χ. Am F C G</button>
+          <button class="ghost sm" data-anex="C G Am F">π.χ. C G Am F</button>
+          <button class="ghost sm" data-anex="Dm G7 C Am">π.χ. Dm G7 C</button>
+        </div>
+        <div id="anOutput"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ VIDEOS ============ -->
+  <section class="panel" id="videos">
+    <div class="card">
+      <h2><span class="i">📺</span> Βίντεο Τεχνικών Εκμάθησης (YouTube)</h2>
+      <div class="body">
+        <p class="lead">Πρόσθεσε βίντεο-μαθήματα από το YouTube για να τα έχεις όλα μαζεμένα. Επικόλλησε τον σύνδεσμο, δώσε τίτλο και κατηγορία. <b>Σημ.:</b> η αναπαραγωγή βίντεο χρειάζεται σύνδεση στο internet.</p>
+        <div class="btnrow" style="align-items:flex-end">
+          <div style="flex:1;min-width:200px"><label class="fld">Σύνδεσμος YouTube</label><input type="text" id="vidUrl" placeholder="https://www.youtube.com/watch?v=..." style="width:100%"></div>
+          <div><label class="fld">Τίτλος</label><input type="text" id="vidTitle" placeholder="π.χ. Πρώτες συγχορδίες" style="width:160px"></div>
+          <div><label class="fld">Κατηγορία</label><select id="vidCat"><option value="piano">🎹 Πιάνο</option><option value="guitar">🎸 Κιθάρα</option><option value="theory">📖 Θεωρία</option><option value="other">🎵 Άλλο</option></select></div>
+          <button class="gold" id="vidAdd">➕ Προσθήκη</button>
+        </div>
+        <div class="chips" style="margin-top:12px">
+          <span class="chip active" data-vfilter="all">Όλα</span>
+          <span class="chip" data-vfilter="piano">🎹 Πιάνο</span>
+          <span class="chip" data-vfilter="guitar">🎸 Κιθάρα</span>
+          <span class="chip" data-vfilter="theory">📖 Θεωρία</span>
+        </div>
+        <div class="tip">💡 Δεν ξέρεις τι να ψάξεις; Άνοιξε αναζήτηση στο YouTube:
+          <a href="https://www.youtube.com/results?search_query=πιάνο+για+αρχάριους+μάθημα" target="_blank" rel="noopener">🎹 πιάνο αρχάριοι</a> ·
+          <a href="https://www.youtube.com/results?search_query=κιθάρα+μάθημα+συγχορδίες+αρχάριοι" target="_blank" rel="noopener">🎸 κιθάρα αρχάριοι</a> ·
+          <a href="https://www.youtube.com/results?search_query=θεωρία+μουσικής+μάθημα" target="_blank" rel="noopener">📖 θεωρία μουσικής</a>
+        </div>
+        <div id="vidList" style="margin-top:14px"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ EAR / QUIZ ============ -->
+  <section class="panel" id="ear">
+    <div class="card">
+      <h2><span class="i">👂</span> Ασκήσεις Ακοής &amp; Γνώσεων</h2>
+      <div class="body">
+        <div class="chips" id="quizModes"></div>
+        <div class="kpis" style="grid-template-columns:repeat(3,1fr)">
+          <div class="kpi"><div class="l">Πόντοι</div><div class="v" id="qScore">0</div></div>
+          <div class="kpi"><div class="l">Σερί</div><div class="v" id="qStreak">0</div></div>
+          <div class="kpi"><div class="l">Ακρίβεια</div><div class="v" id="qAcc">–</div></div>
+        </div>
+        <div id="quizArea" style="margin-top:14px"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ METRONOME ============ -->
+  <section class="panel" id="metro">
+    <div class="card">
+      <h2><span class="i">⏱️</span> Μετρονόμος</h2>
+      <div class="body">
+        <div class="metro-display">
+          <div class="bpm-num"><span id="bpmVal">90</span> <span style="font-size:22px;color:var(--muted)">BPM</span></div>
+          <div class="beats" id="beatDots"></div>
+        </div>
+        <label class="fld">Ταχύτητα (BPM)</label>
+        <input type="range" id="bpmSlider" min="40" max="220" value="90">
+        <div class="btnrow" style="justify-content:center">
+          <button class="ghost sm" data-bpmset="60">Largo 60</button>
+          <button class="ghost sm" data-bpmset="90">Andante 90</button>
+          <button class="ghost sm" data-bpmset="120">Moderato 120</button>
+          <button class="ghost sm" data-bpmset="160">Allegro 160</button>
+        </div>
+        <div class="btnrow" style="justify-content:center;align-items:flex-end">
+          <div><label class="fld">Μέτρο</label>
+            <select id="meter"><option value="4">4/4</option><option value="3">3/4</option><option value="2">2/4</option><option value="6">6/8</option></select>
+          </div>
+          <button class="gold" id="metroToggle" style="min-width:140px">▶ Έναρξη</button>
+        </div>
+        <div class="tip"><b>Πώς να εξασκείσαι:</b> βάλε αργό tempo, παίξε την άσκηση 4 φορές τέλεια, μετά ανέβασε +5 BPM. Ποτέ μην ανεβάζεις ταχύτητα αν κάνεις λάθη — η ακρίβεια πρώτα, η ταχύτητα έρχεται μόνη της.</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="footer">🎵 ΜΟΥΣΙΚΗ ΣΧΟΛΗ 360° · Λειτουργεί εντελώς offline · Ήχος με Web Audio API · Η πρόοδός σου αποθηκεύεται τοπικά στη συσκευή σου.<br><b style="color:var(--gold2)">© by Chronis Makris</b></div>
+</div>
+
+<script>
+/* =========================================================================
+   ΜΟΥΣΙΚΗ ΣΧΟΛΗ 360° — offline μουσικό εργαλείο εκμάθησης
+   ========================================================================= */
+"use strict";
+
+/* ---------- Note helpers ---------- */
+const NOTE_LETTER = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
+const NOTE_LATIN  = ["Ντο","Ντο#","Ρε","Ρε#","Μι","Φα","Φα#","Σολ","Σολ#","Λα","Λα#","Σι"];
+const IS_BLACK = [0,1,0,1,0,0,1,0,1,0,1,0];
+function mtof(m){ return 440 * Math.pow(2,(m-69)/12); }
+function midiName(m, mode){ // mode: latin/letter
+  const pc = ((m%12)+12)%12, oct = Math.floor(m/12)-1;
+  const arr = mode==="latin"?NOTE_LATIN:NOTE_LETTER;
+  return arr[pc] + oct;
+}
+function pcName(pc, mode){ const arr = mode==="latin"?NOTE_LATIN:NOTE_LETTER; return arr[((pc%12)+12)%12]; }
+
+/* =========================================================================
+   AUDIO ENGINE
+   ========================================================================= */
+const Audio = (function(){
+  let ctx=null, master=null, ready=false;
+  const active = {}; // midi -> voice (for held piano notes)
+
+  function init(){
+    if(ctx) return;
+    const AC = window.AudioContext || window.webkitAudioContext;
+    ctx = new AC();
+    master = ctx.createGain();
+    master.gain.value = 0.85;
+    master.connect(ctx.destination);
+    ready = true;
+  }
+  function resume(){ if(ctx && ctx.state==="suspended") ctx.resume(); }
+
+  /* --- Karplus-Strong guitar pluck rendered into a buffer --- */
+  const ksCache = {};
+  function guitarBuffer(freq, dur){
+    const key = Math.round(freq*10)+"_"+dur;
+    if(ksCache[key]) return ksCache[key];
+    const sr = ctx.sampleRate;
+    const N = Math.max(2, Math.floor(sr/freq));
+    const len = Math.floor(sr*dur);
+    const buf = ctx.createBuffer(1, len, sr);
+    const d = buf.getChannelData(0);
+    const noise = new Float32Array(N);
+    for(let i=0;i<N;i++) noise[i] = Math.random()*2-1;
+    const damp = 0.996;
+    let idx=0;
+    const ring = noise.slice();
+    for(let i=0;i<len;i++){
+      const cur = ring[idx];
+      const nxt = ring[(idx+1)%N];
+      d[i] = cur;
+      ring[idx] = (cur+nxt)*0.5*damp;
+      idx = (idx+1)%N;
+    }
+    // gentle overall decay envelope
+    for(let i=0;i<len;i++){ d[i] *= Math.pow(1 - i/len, 0.6); }
+    ksCache[key]=buf;
+    return buf;
+  }
+
+  function playGuitar(midi, dur=1.6, vel=0.9){
+    if(!ready) return;
+    const buf = guitarBuffer(mtof(midi), dur);
+    const src = ctx.createBufferSource(); src.buffer = buf;
+    const g = ctx.createGain(); g.gain.value = 0.9*vel;
+    const lp = ctx.createBiquadFilter(); lp.type="lowpass"; lp.frequency.value=3800;
+    src.connect(lp); lp.connect(g); g.connect(master);
+    src.start();
+  }
+
+  /* --- Piano: additive oscillators + ADSR --- */
+  function pianoVoice(midi, vel=0.9){
+    if(!ready) return null;
+    const f = mtof(midi);
+    const now = ctx.currentTime;
+    const out = ctx.createGain(); out.gain.value = 0; out.connect(master);
+    const parts = [ [1,1.0],[2,0.45],[3,0.22],[4,0.12],[6,0.06] ];
+    const oscs = [];
+    parts.forEach(([mult,amp])=>{
+      const o = ctx.createOscillator();
+      o.type = mult===1?"triangle":"sine";
+      o.frequency.value = f*mult;
+      const g = ctx.createGain(); g.gain.value = amp;
+      o.connect(g); g.connect(out); o.start();
+      oscs.push(o);
+    });
+    const peak = 0.28*vel;
+    out.gain.setValueAtTime(0, now);
+    out.gain.linearRampToValueAtTime(peak, now+0.008);          // attack
+    out.gain.exponentialRampToValueAtTime(peak*0.6, now+0.25);  // decay
+    return {out, oscs, released:false};
+  }
+  function playPiano(midi, dur=null, vel=0.9){
+    const v = pianoVoice(midi, vel); if(!v) return;
+    if(dur){ setTimeout(()=>releaseVoice(v), dur*1000); }
+    else {
+      // one-shot with natural sustain if no key-hold tracking
+      setTimeout(()=>releaseVoice(v), 1600);
+    }
+    return v;
+  }
+  function releaseVoice(v){
+    if(!v || v.released) return; v.released=true;
+    const now = ctx.currentTime;
+    try{
+      v.out.gain.cancelScheduledValues(now);
+      v.out.gain.setValueAtTime(v.out.gain.value, now);
+      v.out.gain.exponentialRampToValueAtTime(0.0001, now+0.4);
+    }catch(e){}
+    setTimeout(()=>{ v.oscs.forEach(o=>{try{o.stop()}catch(e){}}); }, 500);
+  }
+
+  // held-note API for keyboard (piano)
+  function noteOn(midi, inst, vel=0.9){
+    if(!ready) return;
+    if(inst==="guitar"){ playGuitar(midi,1.6,vel); return; }
+    if(active[midi]) releaseVoice(active[midi]);
+    active[midi] = pianoVoice(midi, vel);
+  }
+  function noteOff(midi, inst){
+    if(inst==="guitar") return;
+    if(active[midi]){ releaseVoice(active[midi]); delete active[midi]; }
+  }
+  function play(midi, inst, dur=null, vel=0.9){
+    if(!ready) return;
+    if(inst==="guitar") playGuitar(midi, dur||1.6, vel);
+    else playPiano(midi, dur||1.4, vel);
+  }
+
+  /* --- Metronome click --- */
+  function click(accent){
+    if(!ready) return;
+    const now=ctx.currentTime;
+    const o=ctx.createOscillator(), g=ctx.createGain();
+    o.frequency.value = accent?1600:1000;
+    o.type="square";
+    g.gain.setValueAtTime(0.0001,now);
+    g.gain.linearRampToValueAtTime(accent?0.5:0.32, now+0.001);
+    g.gain.exponentialRampToValueAtTime(0.0001, now+0.05);
+    o.connect(g); g.connect(master); o.start(now); o.stop(now+0.06);
+  }
+
+  return { init, resume, get ready(){return ready}, get ctx(){return ctx},
+           play, noteOn, noteOff, playGuitar, playPiano, click };
+})();
+
+/* Enable audio on first gesture */
+const audioBadge = document.getElementById("audioBadge");
+function enableAudio(){
+  Audio.init(); Audio.resume();
+  audioBadge.classList.add("on");
+  audioBadge.textContent = "🔊 Ήχος ενεργός";
+}
+audioBadge.addEventListener("click", enableAudio);
+document.addEventListener("pointerdown", ()=>{ if(!Audio.ready) enableAudio(); }, {once:true});
+
+/* =========================================================================
+   STORAGE / PROGRESS
+   ========================================================================= */
+const Store = {
+  key:"mousiki360",
+  data:{ done:{}, score:0, streak:0, bestStreak:0, qTotal:0, qCorrect:0, songs:[], recordings:[], videos:[] },
+  load(){ try{ const s=localStorage.getItem(this.key); if(s) this.data=Object.assign(this.data, JSON.parse(s)); }catch(e){} },
+  save(){ try{ localStorage.setItem(this.key, JSON.stringify(this.data)); }catch(e){} }
+};
+Store.load();
+
+/* =========================================================================
+   TAB ROUTER
+   ========================================================================= */
+const tabs = document.getElementById("tabs");
+function showTab(name){
+  document.querySelectorAll("nav.tabs button").forEach(b=>b.classList.toggle("active", b.dataset.tab===name));
+  document.querySelectorAll(".panel").forEach(p=>p.classList.toggle("show", p.id===name));
+  window.scrollTo({top:0,behavior:"smooth"});
+  stopRecPlayback();
+  if(name==="home") renderHome();
+  if(name==="piano") renderRecorder("pianoRec","piano");
+  if(name==="guitar") renderRecorder("guitarRec","guitar");
+  if(name==="videos") renderVideos();
+}
+tabs.addEventListener("click", e=>{ const b=e.target.closest("button"); if(b) showTab(b.dataset.tab); });
+
+/* =========================================================================
+   DATA: chord & scale definitions
+   ========================================================================= */
+const CHORD_TYPES = {
+  "maj":  {label:"Ματζόρε (Major)", int:[0,4,7], suffix:""},
+  "min":  {label:"Μινόρε (minor)", int:[0,3,7], suffix:"m"},
+  "dom7": {label:"Δεσπόζουσα 7η (7)", int:[0,4,7,10], suffix:"7"},
+  "maj7": {label:"Μείζων 7η (maj7)", int:[0,4,7,11], suffix:"maj7"},
+  "min7": {label:"Ελάσσων 7η (m7)", int:[0,3,7,10], suffix:"m7"},
+  "dim":  {label:"Ελαττωμένη (dim)", int:[0,3,6], suffix:"dim"},
+  "aug":  {label:"Αυξημένη (aug)", int:[0,4,8], suffix:"+"},
+  "sus4": {label:"Sus4", int:[0,5,7], suffix:"sus4"},
+  "sus2": {label:"Sus2", int:[0,2,7], suffix:"sus2"}
+};
+const SCALE_TYPES = {
+  "major":     {label:"Μείζονα (Major / Ιωνικός)", int:[0,2,4,5,7,9,11]},
+  "minor":     {label:"Ελάσσονα φυσική (Aeolian)", int:[0,2,3,5,7,8,10]},
+  "harmMinor": {label:"Ελάσσονα αρμονική", int:[0,2,3,5,7,8,11]},
+  "melMinor":  {label:"Ελάσσονα μελωδική (ανιούσα)", int:[0,2,3,5,7,9,11]},
+  "pentaMaj":  {label:"Πεντατονική μείζονα", int:[0,2,4,7,9]},
+  "pentaMin":  {label:"Πεντατονική ελάσσονα", int:[0,3,5,7,10]},
+  "blues":     {label:"Blues", int:[0,3,5,6,7,10]},
+  "dorian":    {label:"Δώριος (Dorian)", int:[0,2,3,5,7,9,10]},
+  "mixolydian":{label:"Μιξολύδιος (Mixolydian)", int:[0,2,4,5,7,9,10]}
+};
+
+/* Guitar chord shapes: frets per string LOW->HIGH [E A D G B e]; -1 mute, 0 open.
+   fingers optional. baseFret for barre shapes. */
+const GUITAR_CHORDS = {
+  "C":   {frets:[-1,3,2,0,1,0], name:"C (Ντο ματζόρε)"},
+  "Cmaj7":{frets:[-1,3,2,0,0,0], name:"Cmaj7"},
+  "C7":  {frets:[-1,3,2,3,1,0], name:"C7"},
+  "D":   {frets:[-1,-1,0,2,3,2], name:"D (Ρε ματζόρε)"},
+  "Dm":  {frets:[-1,-1,0,2,3,1], name:"Dm (Ρε μινόρε)"},
+  "D7":  {frets:[-1,-1,0,2,1,2], name:"D7"},
+  "E":   {frets:[0,2,2,1,0,0], name:"E (Μι ματζόρε)"},
+  "Em":  {frets:[0,2,2,0,0,0], name:"Em (Μι μινόρε)"},
+  "E7":  {frets:[0,2,0,1,0,0], name:"E7"},
+  "Em7": {frets:[0,2,0,0,0,0], name:"Em7"},
+  "F":   {frets:[1,3,3,2,1,1], name:"F (μπαρέ)", barre:1},
+  "Fmaj7":{frets:[-1,-1,3,2,1,0], name:"Fmaj7 (εύκολο)"},
+  "G":   {frets:[3,2,0,0,0,3], name:"G (Σολ ματζόρε)"},
+  "G7":  {frets:[3,2,0,0,0,1], name:"G7"},
+  "A":   {frets:[-1,0,2,2,2,0], name:"A (Λα ματζόρε)"},
+  "Am":  {frets:[-1,0,2,2,1,0], name:"Am (Λα μινόρε)"},
+  "A7":  {frets:[-1,0,2,0,2,0], name:"A7"},
+  "Am7": {frets:[-1,0,2,0,1,0], name:"Am7"},
+  "B7":  {frets:[-1,2,1,2,0,2], name:"B7"},
+  "Bm":  {frets:[-1,2,4,4,3,2], name:"Bm (μπαρέ)", barre:2}
+};
+const GUITAR_TUNING = [40,45,50,55,59,64]; // E2 A2 D3 G3 B3 E4 (MIDI), low->high
+
+/* =========================================================================
+   HOME dashboard
+   ========================================================================= */
+const HOME_CARDS = [
+  {tab:"lessons", ic:"🎓", h:"Μαθήματα", p:"Δομημένη πορεία από αρχάριος σε επαγγελματίας — πιάνο & κιθάρα."},
+  {tab:"piano", ic:"🎹", h:"Πιάνο", p:"Παίξε το διαδραστικό πληκτρολόγιο με πραγματικό ήχο."},
+  {tab:"guitar", ic:"🎸", h:"Κιθάρα", p:"Ταστιέρα με δαχτυλιές συγχορδιών και ήχο πλυκ."},
+  {tab:"theory", ic:"📖", h:"Θεωρία", p:"Νότες, πεντάγραμμο, διαστήματα, ρυθμός, οπλισμός."},
+  {tab:"chords", ic:"🎼", h:"Συγχορδίες", p:"Βιβλιοθήκη με διαγράμματα για κιθάρα & πιάνο."},
+  {tab:"scales", ic:"🪜", h:"Κλίμακες", p:"Μείζονες, ελάσσονες, πεντατονικές, blues κ.ά."},
+  {tab:"songwriter", ic:"🎤", h:"Σύνθεση", p:"Δώσε στίχους, διάλεξε ύφος → τραγούδι με συγχορδίες που παίζεται."},
+  {tab:"ear", ic:"👂", h:"Ασκήσεις", p:"Εκπαίδευση αυτιού & γνώσεων με πόντους."},
+  {tab:"metro", ic:"⏱️", h:"Μετρονόμος", p:"Κράτα ρυθμό — το πιο σημαντικό εργαλείο εξάσκησης."}
+];
+function renderHome(){
+  const grid = document.getElementById("homeGrid");
+  grid.innerHTML = HOME_CARDS.map(c=>`<div class="hc" data-go="${c.tab}"><div class="ic">${c.ic}</div><h3>${c.h}</h3><p>${c.p}</p></div>`).join("");
+  grid.querySelectorAll("[data-go]").forEach(el=>el.addEventListener("click",()=>showTab(el.dataset.go)));
+  const totalLessons = LESSONS.piano.length + LESSONS.guitar.length;
+  const doneCount = Object.keys(Store.data.done).length;
+  const pct = totalLessons? Math.round(doneCount/totalLessons*100):0;
+  document.getElementById("kpiLessons").innerHTML = doneCount+`<small>/${totalLessons}</small>`;
+  document.getElementById("kpiPct").innerHTML = pct+`<small>%</small>`;
+  document.getElementById("kpiScore").textContent = Store.data.score;
+  document.getElementById("kpiStreak").textContent = Store.data.bestStreak;
+  document.getElementById("homeBar").style.width = pct+"%";
+}
+
+/* =========================================================================
+   PIANO (interactive)
+   ========================================================================= */
+const KEYMAP = {a:0,w:1,s:2,e:3,d:4,f:5,t:6,g:7,y:8,h:9,u:10,j:11,k:12};
+let pianoState = { start:60, octaves:3, names:"latin", highlight:new Set(), root:null };
+
+function buildPiano(container, opts){
+  const {start, octaves, names, highlight, root} = opts;
+  container.innerHTML="";
+  const total = octaves*12+1; // include final C
+  // white keys first
+  const whites=[], all=[];
+  for(let i=0;i<total;i++){ const m=start+i; all.push(m); if(!IS_BLACK[m%12]) whites.push(m); }
+  const whiteWidthPct = 100/whites.length;
+  // Build white keys
+  whites.forEach((m,wi)=>{
+    const k=document.createElement("div"); k.className="wkey"; k.dataset.m=m;
+    if(highlight && highlight.has(m%12)) k.classList.add(root!=null && m%12===root?"root":"hl");
+    let lbl = names!=="off"? `<span class="lbl">${names==="latin"?NOTE_LATIN[m%12]:NOTE_LETTER[m%12]}${(m%12===0?("<b style='color:#e30613'>"+(Math.floor(m/12)-1)+"</b>"):"")}</span>`:"";
+    k.innerHTML = lbl;
+    container.appendChild(k);
+  });
+  // Build black keys positioned over whites
+  let wIndex=0;
+  const containerWidth = ()=>container.getBoundingClientRect().width || (whites.length*40);
+  // We'll position black keys after layout using relative offsets based on white index
+  whites.forEach((m,wi)=>{
+    // check if a black key follows this white (i.e., m+1 is black and within range)
+    const nb = m+1;
+    if(IS_BLACK[nb%12] && all.includes(nb)){
+      const bk=document.createElement("div"); bk.className="bkey"; bk.dataset.m=nb;
+      if(highlight && highlight.has(nb%12)) bk.classList.add(root!=null && nb%12===root?"root":"hl");
+      bk.innerHTML = names!=="off"? `<span class="lbl">${names==="latin"?NOTE_LATIN[nb%12]:NOTE_LETTER[nb%12]}</span>`:"";
+      bk.style.left = `calc(${(wi+1)*whiteWidthPct}% - 13px)`;
+      container.appendChild(bk);
+    }
+  });
+  // events
+  container.querySelectorAll(".wkey,.bkey").forEach(k=>{
+    const m=+k.dataset.m;
+    const down=(ev)=>{ ev.preventDefault(); if(!Audio.ready) enableAudio(); Audio.noteOn(m,"piano"); Recorder.noteStart(m,"piano"); k.classList.add("dn"); };
+    const up=()=>{ Audio.noteOff(m,"piano"); Recorder.noteEnd(m,"piano"); k.classList.remove("dn"); };
+    k.addEventListener("pointerdown",down);
+    k.addEventListener("pointerup",up);
+    k.addEventListener("pointerleave",up);
+    k.addEventListener("pointercancel",up);
+  });
+}
+function renderPiano(){
+  pianoState.start = +document.getElementById("pStart").value*12+12; // Cx -> midi (C4=60)
+  pianoState.octaves = +document.getElementById("pOct").value;
+  pianoState.names = document.getElementById("pNames").value;
+  const show = document.getElementById("pShow").value;
+  pianoState.highlight = new Set(); pianoState.root=null;
+  const info = document.getElementById("pInfo");
+  if(show==="none"){ info.style.display="none"; }
+  else {
+    const [kind,val]=show.split(":");
+    if(kind==="chord"){
+      const t=CHORD_TYPES[val==="maj"?"maj":val==="min"?"min":val==="maj7"?"maj7":"dom7"];
+      t.int.forEach(iv=>pianoState.highlight.add((0+iv)%12));
+      pianoState.root=0;
+      info.style.display="block";
+      info.innerHTML=`<b>${"C"+t.suffix} — ${t.label}:</b> νότες ${t.int.map(iv=>NOTE_LATIN[iv%12]).join(" – ")}. Το πορτοκαλί είναι ο θεμέλιος (Ντο).`;
+    } else {
+      const sc=SCALE_TYPES[val];
+      sc.int.forEach(iv=>pianoState.highlight.add(iv%12));
+      pianoState.root=0;
+      info.style.display="block";
+      info.innerHTML=`<b>${sc.label} από Ντο:</b> ${sc.int.map(iv=>NOTE_LATIN[iv%12]).join(" – ")} – Ντο.`;
+    }
+  }
+  buildPiano(document.getElementById("pianoEl"), pianoState);
+}
+["pOct","pStart","pNames","pShow"].forEach(id=>document.getElementById(id).addEventListener("change",renderPiano));
+
+// Keyboard control for piano
+let kbOctaveShift=0;
+const pressedKeys={};
+document.addEventListener("keydown",e=>{
+  if(document.getElementById("piano").classList.contains("show")===false) return;
+  const key=e.key.toLowerCase();
+  if(key==="z"){ kbOctaveShift-=1; return; }
+  if(key==="x"){ kbOctaveShift+=1; return; }
+  if(key in KEYMAP && !pressedKeys[key]){
+    pressedKeys[key]=true;
+    if(!Audio.ready) enableAudio();
+    const m = pianoState.start + KEYMAP[key] + kbOctaveShift*12;
+    Audio.noteOn(m,"piano"); Recorder.noteStart(m,"piano");
+    const el=document.querySelector(`#pianoEl [data-m="${m}"]`); if(el) el.classList.add("dn");
+  }
+});
+document.addEventListener("keyup",e=>{
+  const key=e.key.toLowerCase();
+  if(key in KEYMAP && pressedKeys[key]){
+    pressedKeys[key]=false;
+    const m = pianoState.start + KEYMAP[key] + kbOctaveShift*12;
+    Audio.noteOff(m,"piano"); Recorder.noteEnd(m,"piano");
+    const el=document.querySelector(`#pianoEl [data-m="${m}"]`); if(el) el.classList.remove("dn");
+  }
+});
+
+/* =========================================================================
+   GUITAR fretboard
+   ========================================================================= */
+let guitarState = { frets:12, names:"letter", chord:"none" };
+function renderGuitar(){
+  guitarState.frets = +document.getElementById("gFrets").value;
+  guitarState.names = document.getElementById("gNames").value;
+  guitarState.chord = document.getElementById("gChord").value;
+  const nf = guitarState.frets;
+  const tbl = document.getElementById("fretEl");
+  const chord = guitarState.chord!=="none"? GUITAR_CHORDS[guitarState.chord]:null;
+  // determine root pc if chord
+  let rootPc=null;
+  if(chord){ const m=chordLowestNote(chord); rootPc = m!=null? m%12 : null; }
+  const strNames = ["Mi","Λα","Ρε","Σολ","Σι","Mi"]; // low->high shown high->low
+  // header row
+  let html="<tr><th></th><th>0</th>";
+  for(let f=1;f<=nf;f++){ const mk=[3,5,7,9,12,15].includes(f)?`<span class="fretmark">●${f===12?"●":""}</span>`:""; html+=`<th>${f} ${mk}</th>`; }
+  html+="</tr>";
+  // strings high(e)->low(E) for display => index 5..0
+  for(let s=5;s>=0;s--){
+    const openMidi = GUITAR_TUNING[s];
+    html+=`<tr><td class="strname">${(guitarState.names==="latin"?["Μι","Λα","Ρε","Σολ","Σι","Μι"]:["E","A","D","G","B","E"])[s]}</td>`;
+    // open (fret 0)
+    let cellCls, dotHtml="";
+    if(chord){
+      const fr=chord.frets[s];
+      if(fr===-1){ dotHtml=`<div class="fretmark">✕</div>`; }
+      else if(fr===0){ dotHtml=`<div class="dot ${ (openMidi%12)===rootPc?'root':'hl'}">○</div>`; }
+    }
+    html+=`<td class="open nutcol" data-s="${s}" data-f="0">${dotHtml}</td>`;
+    for(let f=1;f<=nf;f++){
+      const midi=openMidi+f;
+      let dh="";
+      if(chord && chord.frets[s]===f){ dh=`<div class="dot ${ (midi%12)===rootPc?'root':'hl'}">${(midi%12)===rootPc?'R':'●'}</div>`; }
+      html+=`<td class="cell" data-s="${s}" data-f="${f}">${dh}</td>`;
+    }
+    html+="</tr>";
+  }
+  tbl.innerHTML=html;
+  tbl.querySelectorAll("td[data-s]").forEach(td=>{
+    td.addEventListener("pointerdown",()=>{
+      if(!Audio.ready) enableAudio();
+      const s=+td.dataset.s, f=+td.dataset.f;
+      const midi=GUITAR_TUNING[s]+f;
+      Audio.playGuitar(midi,1.5,0.9); Recorder.oneShot(midi,"guitar");
+      const old=td.querySelector(".playtmp");
+      const d=document.createElement("div"); d.className="dot play playtmp";
+      d.textContent = guitarState.names==="latin"?NOTE_LATIN[midi%12]:NOTE_LETTER[midi%12];
+      d.style.fontSize="9px";
+      if(!td.querySelector(".dot")){ td.appendChild(d); setTimeout(()=>{d.remove()},650); }
+    });
+  });
+  const info=document.getElementById("gInfo");
+  if(chord){
+    info.style.display="block";
+    const notes = chordNotes(chord).map(m=>guitarState.names==="latin"?NOTE_LATIN[m%12]:NOTE_LETTER[m%12]);
+    info.innerHTML=`<b>${chord.name}</b> — παιγμένες νότες: ${[...new Set(notes)].join(" · ")}. ${chord.barre?`<br>⚠️ Συγχορδία <b>μπαρέ</b>: ο δείκτης πατά όλες τις χορδές στο τάστο ${chord.barre}.`:""}`;
+  } else info.style.display="none";
+}
+function chordNotes(chord){ const out=[]; chord.frets.forEach((fr,s)=>{ if(fr>=0) out.push(GUITAR_TUNING[s]+fr); }); return out; }
+function chordLowestNote(chord){ for(let s=0;s<6;s++){ if(chord.frets[s]>=0) return GUITAR_TUNING[s]+chord.frets[s]; } return null; }
+function strumChord(chord){
+  if(!chord) return; if(!Audio.ready) enableAudio();
+  const notes=[]; chord.frets.forEach((fr,s)=>{ if(fr>=0) notes.push(GUITAR_TUNING[s]+fr); });
+  notes.forEach((m,i)=> setTimeout(()=>Audio.playGuitar(m,1.8,0.85), i*55));
+}
+["gFrets","gNames","gChord"].forEach(id=>document.getElementById(id).addEventListener("change",renderGuitar));
+document.getElementById("gStrum").addEventListener("click",()=>{ if(guitarState.chord!=="none") strumChord(GUITAR_CHORDS[guitarState.chord]); });
+// populate guitar chord dropdown
+(function(){ const sel=document.getElementById("gChord"); Object.keys(GUITAR_CHORDS).forEach(k=>{ const o=document.createElement("option"); o.value=k; o.textContent=GUITAR_CHORDS[k].name; sel.appendChild(o); }); })();
+
+/* =========================================================================
+   THEORY content
+   ========================================================================= */
+const THEORY = {
+  "Νότες & Πεντάγραμμο": `
+    <p class="lead">Η μουσική γράφεται με 7 βασικά ονόματα νοτών που επαναλαμβάνονται: <b>Ντο, Ρε, Μι, Φα, Σολ, Λα, Σι</b> (C D E F G A B). Μετά το Σι ξαναρχίζουμε από Ντο μία <b>οκτάβα</b> ψηλότερα.</p>
+    <h3>Το πεντάγραμμο</h3>
+    <p>Οι νότες τοποθετούνται πάνω σε 5 γραμμές και 4 διαστήματα. Στο <b>κλειδί του Σολ</b> (βιολιού):</p>
+    <div class="kv"><b>Γραμμές (κάτω→πάνω):</b><span>Μι – Σολ – Σι – Ρε – Φα</span><b>Διαστήματα:</b><span>Φα – Λα – Ντο – Μι</span></div>
+    <div class="tip"><b>Μνημονικό:</b> για τα διαστήματα «ΦΑ-ΛΑ-ΝΤΟ-ΜΙ» θυμήσου τη λέξη-σκάλα. Για τις γραμμές: «Μια Σοβαρή Σιωπή Ρίχνει Φως».</div>
+    <h3>Δίεση, ύφεση, αναίρεση</h3>
+    <ul class="tick">
+      <li><b>Δίεση ♯</b>: ανεβάζει τη νότα κατά ένα ημιτόνιο (μισό τόνο).</li>
+      <li><b>Ύφεση ♭</b>: κατεβάζει τη νότα κατά ένα ημιτόνιο.</li>
+      <li><b>Αναίρεση ♮</b>: ακυρώνει δίεση/ύφεση.</li>
+    </ul>
+    <p>Στο πιάνο, τα μαύρα πλήκτρα είναι οι διέσεις/υφέσεις. Το ίδιο μαύρο πλήκτρο λέγεται π.χ. <span class="badge-inline">Ντο♯</span> ή <span class="badge-inline">Ρε♭</span> — ίδιος ήχος, δύο ονόματα (εναρμόνιες).</p>`,
+  "Τόνοι & Ημιτόνια": `
+    <p class="lead">Η απόσταση ανάμεσα σε δύο νότες μετριέται σε <b>τόνους</b> και <b>ημιτόνια</b>. Το ημιτόνιο είναι η μικρότερη απόσταση στη δυτική μουσική.</p>
+    <ul class="tick">
+      <li><b>Ημιτόνιο</b> = 1 βήμα (π.χ. Μι→Φα, ή Ντο→Ντο♯). Στο πιάνο: δύο διπλανά πλήκτρα.</li>
+      <li><b>Τόνος</b> = 2 ημιτόνια (π.χ. Ντο→Ρε).</li>
+    </ul>
+    <div class="note"><b>Προσοχή:</b> Ανάμεσα σε <b>Μι–Φα</b> και <b>Σι–Ντο</b> ΔΕΝ υπάρχει μαύρο πλήκτρο — είναι φυσικά ημιτόνια! Όλα τα υπόλοιπα γειτονικά λευκά απέχουν τόνο.</div>
+    <h3>Ο τύπος της μείζονας κλίμακας</h3>
+    <p>Κάθε μείζονα κλίμακα χτίζεται με το μοτίβο: <b>Τ – Τ – Η – Τ – Τ – Τ – Η</b> (Τόνος/Ημιτόνιο). Ξεκινώντας από Ντο βγαίνουν μόνο λευκά πλήκτρα: Ντο Ρε Μι Φα Σολ Λα Σι Ντο.</p>`,
+  "Διαστήματα": `
+    <p class="lead">Διάστημα = η «απόσταση» μεταξύ δύο νοτών. Είναι η βάση για συγχορδίες και μελωδίες.</p>
+    <table class="data"><tr><th>Διάστημα</th><th>Ημιτόνια</th><th>Παράδειγμα</th><th>Ήχος</th></tr>
+    <tr><td>Καθαρή 1η (unison)</td><td>0</td><td>Ντο–Ντο</td><td>ίδια νότα</td></tr>
+    <tr><td>Μικρή 2η</td><td>1</td><td>Ντο–Ρε♭</td><td>ένταση</td></tr>
+    <tr><td>Μεγάλη 2η</td><td>2</td><td>Ντο–Ρε</td><td>βήμα</td></tr>
+    <tr><td>Μικρή 3η</td><td>3</td><td>Ντο–Μι♭</td><td>μινόρε/λυπημένο</td></tr>
+    <tr><td>Μεγάλη 3η</td><td>4</td><td>Ντο–Μι</td><td>ματζόρε/χαρούμενο</td></tr>
+    <tr><td>Καθαρή 4η</td><td>5</td><td>Ντο–Φα</td><td>σταθερό</td></tr>
+    <tr><td>Τρίτονο</td><td>6</td><td>Ντο–Φα♯</td><td>έντονη ένταση</td></tr>
+    <tr><td>Καθαρή 5η</td><td>7</td><td>Ντο–Σολ</td><td>πολύ σταθερό</td></tr>
+    <tr><td>Μεγάλη 6η</td><td>9</td><td>Ντο–Λα</td><td>γλυκό</td></tr>
+    <tr><td>Μεγάλη 7η</td><td>11</td><td>Ντο–Σι</td><td>λαχτάρα για λύση</td></tr>
+    <tr><td>Οκτάβα</td><td>12</td><td>Ντο–Ντο</td><td>ίδια νότα ψηλότερα</td></tr></table>
+    <div class="tip"><b>Άσκηση:</b> Πήγαινε στις «Ασκήσεις → Διαστήματα» και μάθε να τα αναγνωρίζεις με το αυτί. Η <b>μεγάλη 3η</b> ακούγεται χαρούμενη, η <b>μικρή 3η</b> λυπημένη — αυτή είναι η διαφορά ματζόρε/μινόρε!</div>`,
+  "Συγχορδίες: πώς χτίζονται": `
+    <p class="lead">Συγχορδία = 3+ νότες μαζί. Οι βασικές («τρίφωνες») χτίζονται στοιβάζοντας <b>τρίτες</b>.</p>
+    <div class="kv">
+      <b>Ματζόρε:</b><span>θεμέλιος + μεγάλη 3η + καθαρή 5η (0-4-7). Π.χ. C = Ντο-Μι-Σολ.</span>
+      <b>Μινόρε:</b><span>θεμέλιος + μικρή 3η + καθαρή 5η (0-3-7). Π.χ. Cm = Ντο-Μι♭-Σολ.</span>
+      <b>Ελαττωμένη:</b><span>0-3-6 (δύο μικρές 3ες).</span>
+      <b>Αυξημένη:</b><span>0-4-8 (δύο μεγάλες 3ες).</span>
+      <b>Δεσπόζουσα 7η:</b><span>0-4-7-10. Δίνει «τάση» — θέλει λύση (π.χ. G7→C).</span>
+    </div>
+    <h3>Αρμονικοποίηση μείζονας κλίμακας</h3>
+    <p>Χτίζοντας συγχορδία σε κάθε βαθμίδα της κλίμακας Ντο ματζόρε παίρνουμε το «οικογενειακό» σετ συγχορδιών:</p>
+    <table class="data"><tr><th>Βαθμίδα</th><th>I</th><th>ii</th><th>iii</th><th>IV</th><th>V</th><th>vi</th><th>vii°</th></tr>
+    <tr><td>Συγχ.</td><td>C</td><td>Dm</td><td>Em</td><td>F</td><td>G</td><td>Am</td><td>B°</td></tr></table>
+    <div class="tip"><b>Χρυσός κανόνας ποπ/ροκ:</b> οι συγχορδίες <b>I – V – vi – IV</b> (π.χ. C–G–Am–F) φτιάχνουν αμέτρητα τραγούδια. Δοκίμασέ τες στην κιθάρα!</div>`,
+  "Ρυθμός & Μέτρο": `
+    <p class="lead">Ο ρυθμός οργανώνει τον χρόνο. Το <b>μέτρο</b> (π.χ. 4/4) λέει πόσους χτύπους έχει κάθε μέτρο.</p>
+    <div class="kv"><b>4/4:</b><span>4 τέταρτα ανά μέτρο — το πιο κοινό («common time»).</span>
+    <b>3/4:</b><span>3 τέταρτα — βαλς.</span>
+    <b>6/8:</b><span>6 όγδοα, με αίσθηση σε 2 ομάδες των 3.</span></div>
+    <h3>Αξίες νοτών</h3>
+    <table class="data"><tr><th>Νότα</th><th>Διάρκεια σε 4/4</th></tr>
+    <tr><td>Ολόκληρο 𝅝</td><td>4 χτύποι</td></tr>
+    <tr><td>Μισό 𝅗𝅥</td><td>2 χτύποι</td></tr>
+    <tr><td>Τέταρτο ♩</td><td>1 χτύπος</td></tr>
+    <tr><td>Όγδοο ♪</td><td>μισός χτύπος</td></tr>
+    <tr><td>Δέκατο έκτο 𝅘𝅥𝅯</td><td>τέταρτο χτύπου</td></tr></table>
+    <div class="tip"><b>Μέτρα με τη φωνή:</b> για όγδοα λέγε «1-και-2-και-3-και-4-και». Χρησιμοποίησε πάντα τον μετρονόμο.</div>`,
+  "Οπλισμός & Τονικότητες": `
+    <p class="lead">Ο <b>οπλισμός</b> (key signature) στην αρχή του πενταγράμμου δείχνει ποιες νότες παίζονται πάντα με δίεση ή ύφεση — καθορίζει την τονικότητα του κομματιού.</p>
+    <h3>Κύκλος των πεμπτών</h3>
+    <p>Κάθε φορά που ανεβαίνουμε μια καθαρή 5η, προστίθεται μία δίεση:</p>
+    <div class="kv"><b>Διέσεις (♯):</b><span>Σολ(1) → Ρε(2) → Λα(3) → Μι(4) → Σι(5)…</span>
+    <b>Υφέσεις (♭):</b><span>Φα(1) → Σι♭(2) → Μι♭(3) → Λα♭(4)…</span></div>
+    <p>Κάθε μείζονα τονικότητα έχει μια <b>σχετική ελάσσονα</b> με τον ίδιο οπλισμό, μία μικρή 3η χαμηλότερα: π.χ. Ντο ματζόρε ↔ Λα ελάσσονα.</p>
+    <div class="note"><b>Πρακτικά:</b> Ως αρχάριος, ξεκίνα σε τονικότητες χωρίς οπλισμό (Ντο ματζόρε / Λα ελάσσονα) και πρόσθετε σταδιακά.</div>`
+};
+function renderTheory(){
+  const chips=document.getElementById("theoryChips");
+  const keys=Object.keys(THEORY);
+  chips.innerHTML=keys.map((k,i)=>`<span class="chip ${i===0?'active':''}" data-th="${k}">${k}</span>`).join("");
+  const show=(k)=>{ document.getElementById("theoryContent").innerHTML=THEORY[k]; chips.querySelectorAll(".chip").forEach(c=>c.classList.toggle("active",c.dataset.th===k)); };
+  chips.querySelectorAll(".chip").forEach(c=>c.addEventListener("click",()=>show(c.dataset.th)));
+  show(keys[0]);
+}
+
+/* =========================================================================
+   CHORDS library
+   ========================================================================= */
+let chordUI = { inst:"guitar", root:0, type:"maj" };
+const ROOTS12 = [0,1,2,3,4,5,6,7,8,9,10,11];
+function renderChordControls(){
+  const roots=document.getElementById("chordRoots");
+  roots.innerHTML=ROOTS12.map(pc=>`<span class="chip gold ${pc===chordUI.root?'active':''}" data-root="${pc}">${NOTE_LATIN[pc]}</span>`).join("");
+  roots.querySelectorAll(".chip").forEach(c=>c.addEventListener("click",()=>{ chordUI.root=+c.dataset.root; renderChordControls(); renderChordView(); }));
+  const types=document.getElementById("chordTypes");
+  types.innerHTML=Object.keys(CHORD_TYPES).map(t=>`<span class="chip ${t===chordUI.type?'active':''}" data-type="${t}">${CHORD_TYPES[t].label}</span>`).join("");
+  types.querySelectorAll(".chip").forEach(c=>c.addEventListener("click",()=>{ chordUI.type=c.dataset.type; renderChordControls(); renderChordView(); }));
+}
+function guitarDiagramSVG(chord){
+  // draw 6 strings x 5 frets, starting fret = min positive fret (or 1)
+  const frets=chord.frets;
+  const positives=frets.filter(f=>f>0);
+  const minF = positives.length?Math.min(...positives):1;
+  const maxF = positives.length?Math.max(...positives):4;
+  let startFret = maxF>4 ? minF : 1;
+  const rows=5;
+  const W=200,H=230, padX=28, padY=34, gw=(W-2*padX)/5, gh=(H-2*padY)/rows;
+  let s=`<svg viewBox="0 0 ${W} ${H}" width="200" height="230" xmlns="http://www.w3.org/2000/svg" style="background:#fff;border-radius:10px">`;
+  // strings (vertical) 6
+  for(let i=0;i<6;i++){ const x=padX+i*gw; s+=`<line x1="${x}" y1="${padY}" x2="${x}" y2="${padY+rows*gh}" stroke="#333" stroke-width="1.4"/>`; }
+  // frets (horizontal)
+  for(let j=0;j<=rows;j++){ const y=padY+j*gh; s+=`<line x1="${padX}" y1="${y}" x2="${padX+5*gw}" y2="${y}" stroke="#333" stroke-width="${j===0&&startFret===1?4:1.4}"/>`; }
+  if(startFret>1){ s+=`<text x="${padX-14}" y="${padY+gh*0.7}" font-size="12" fill="#333" font-family="sans-serif">${startFret}fr</text>`; }
+  // markers per string (low E is left => i=0)
+  frets.forEach((fr,i)=>{
+    const x=padX+i*gw;
+    if(fr===-1){ s+=`<text x="${x}" y="${padY-12}" font-size="14" fill="#c00" text-anchor="middle" font-family="sans-serif">✕</text>`; }
+    else if(fr===0){ s+=`<circle cx="${x}" cy="${padY-16}" r="6" fill="none" stroke="#333" stroke-width="1.6"/>`; }
+    else {
+      const rel=fr-startFret+1;
+      if(rel>=1&&rel<=rows){ const y=padY+(rel-0.5)*gh;
+        const isRoot=(GUITAR_TUNING[i]+fr)%12 === chordLowestNote(chord)%12;
+        s+=`<circle cx="${x}" cy="${y}" r="9" fill="${isRoot?'#e8b34a':'#e30613'}"/>`;
+      }
+    }
+  });
+  s+=`</svg>`;
+  return s;
+}
+function renderChordView(){
+  const view=document.getElementById("chordView");
+  const t=CHORD_TYPES[chordUI.type];
+  const rootPc=chordUI.root;
+  const chordName = pcName(rootPc,"latin")+t.suffix+" ("+NOTE_LETTER[rootPc]+t.suffix+")";
+  const noteList = t.int.map(iv=>NOTE_LATIN[(rootPc+iv)%12]);
+  if(chordUI.inst==="piano"){
+    // highlight on a 2-octave piano from root
+    const start = 60 + ((rootPc)); // start around C4+root -> but keep C4 base for layout; we highlight pcs
+    const opts={ start:60, octaves:2, names:"latin", highlight:new Set(t.int.map(iv=>(rootPc+iv)%12)), root:rootPc };
+    view.innerHTML=`<h3>${chordName}</h3><p class="lead">Νότες: <b>${noteList.join(" – ")}</b></p>
+      <div class="btnrow"><button class="gold sm" id="chPlay">▶ Παίξε τη συγχορδία</button><button class="ghost sm" id="chArp">▶ Αρπισμό (μία-μία)</button></div>
+      <div class="piano-wrap"><div class="piano" id="chPiano"></div></div>`;
+    buildPiano(document.getElementById("chPiano"), opts);
+    const midis = t.int.map(iv=>60+rootPc+iv);
+    document.getElementById("chPlay").onclick=()=>{ if(!Audio.ready)enableAudio(); midis.forEach(m=>Audio.playPiano(m,1.6,0.8)); };
+    document.getElementById("chArp").onclick=()=>{ if(!Audio.ready)enableAudio(); midis.forEach((m,i)=>setTimeout(()=>Audio.playPiano(m,1.2,0.8),i*220)); };
+  } else {
+    // guitar: find matching shape by name if exists, else message
+    const letterName = NOTE_LETTER[rootPc]+t.suffix;
+    const alt = { "":"", "m":"m","7":"7","maj7":"maj7","m7":"m7"};
+    const shape = GUITAR_CHORDS[letterName];
+    let body=`<h3>${chordName}</h3><p class="lead">Νότες: <b>${noteList.join(" – ")}</b></p>`;
+    if(shape){
+      body+=`<div style="display:flex;gap:20px;flex-wrap:wrap;align-items:center">
+        <div>${guitarDiagramSVG(shape)}</div>
+        <div><p style="font-size:14px;margin:0 0 8px"><b>${shape.name}</b></p>
+        <button class="gold sm" id="chStrum">🎸 Παίξε</button>
+        ${shape.barre?`<div class="note" style="margin-top:10px">Συγχορδία <b>μπαρέ</b> στο τάστο ${shape.barre}.</div>`:``}
+        <p style="font-size:12px;color:var(--muted);margin-top:10px">🟡 = θεμέλιος · 🔴 = νότα συγχορδίας · ✕ = μη παιζόμενη · ○ = ανοιχτή</p></div></div>`;
+    } else {
+      body+=`<div class="note">Για αυτή τη συγχορδία δεν υπάρχει έτοιμο διάγραμμα κιθάρας εδώ. Δες την <b>στο πιάνο</b> (κουμπί 🎹 πάνω) ή βρες την ανοιχτή/μπαρέ μορφή στα «Μαθήματα Κιθάρας». Διαθέσιμες: ${Object.keys(GUITAR_CHORDS).join(", ")}.</div>`;
+    }
+    view.innerHTML=body;
+    if(shape){ document.getElementById("chStrum").onclick=()=>strumChord(shape); }
+  }
+}
+document.querySelectorAll("[data-cinst]").forEach(c=>c.addEventListener("click",()=>{
+  document.querySelectorAll("[data-cinst]").forEach(x=>x.classList.remove("active"));
+  c.classList.add("active"); chordUI.inst=c.dataset.cinst; renderChordView();
+}));
+
+/* =========================================================================
+   SCALES
+   ========================================================================= */
+function initScales(){
+  const r=document.getElementById("scRoot"); r.innerHTML=ROOTS12.map(pc=>`<option value="${pc}">${NOTE_LATIN[pc]} (${NOTE_LETTER[pc]})</option>`).join("");
+  const t=document.getElementById("scType"); t.innerHTML=Object.keys(SCALE_TYPES).map(k=>`<option value="${k}">${SCALE_TYPES[k].label}</option>`).join("");
+  r.addEventListener("change",renderScale); t.addEventListener("change",renderScale);
+  document.getElementById("scPlay").addEventListener("click",playScale);
+}
+function scaleMidis(){
+  const root=+document.getElementById("scRoot").value;
+  const type=document.getElementById("scType").value;
+  const base=60+root;
+  const ms=SCALE_TYPES[type].int.map(iv=>base+iv); ms.push(base+12);
+  return ms;
+}
+function renderScale(){
+  const root=+document.getElementById("scRoot").value;
+  const type=document.getElementById("scType").value;
+  const sc=SCALE_TYPES[type];
+  const pcs=new Set(sc.int.map(iv=>(root+iv)%12));
+  document.getElementById("scInfo").innerHTML=`<h3>${pcName(root,"latin")} ${sc.label}</h3>
+    <p class="lead">Νότες: <b>${sc.int.map(iv=>NOTE_LATIN[(root+iv)%12]).join(" – ")} – ${NOTE_LATIN[root]}</b></p>`;
+  buildPiano(document.getElementById("scPiano"), {start:60,octaves:2,names:"latin",highlight:pcs,root:root});
+  const steps=[]; for(let i=1;i<sc.int.length;i++){ const d=sc.int[i]-sc.int[i-1]; steps.push(d===2?"Τ":d===1?"Η":d+"½"); }
+  document.getElementById("scNotes").innerHTML=`<b>Δομή (βήματα):</b> ${steps.join(" – ")} ${sc.int.length===7?"(Τ=τόνος, Η=ημιτόνιο)":""}`;
+}
+let scaleTimer=null;
+function playScale(){
+  if(!Audio.ready)enableAudio();
+  const ms=scaleMidis(); const up=ms.slice(), down=ms.slice().reverse().slice(1);
+  const seq=up.concat(down);
+  seq.forEach((m,i)=>setTimeout(()=>Audio.playPiano(m,0.5,0.8), i*260));
+}
+
+/* =========================================================================
+   LESSONS (curriculum)
+   ========================================================================= */
+const LESSONS = {
+  piano:[
+    {id:"p1",lvl:"beg",t:"Γνωριμία με το πληκτρολόγιο",d:"Πού είναι το μεσαίο Ντο, ομάδες μαύρων πλήκτρων",
+     body:`<p>Το πιάνο έχει ένα επαναλαμβανόμενο μοτίβο: <b>ομάδες 2 και 3 μαύρων πλήκτρων</b>. Αυτό σε βοηθά να βρίσκεις κάθε νότα.</p>
+     <ul class="tick"><li>Το <b>Ντο</b> είναι πάντα το λευκό <b>αριστερά από την ομάδα των 2 μαύρων</b>.</li>
+     <li>Το <b>Φα</b> είναι το λευκό αριστερά από την ομάδα των 3 μαύρων.</li>
+     <li>Το <b>μεσαίο Ντο (C4)</b> είναι περίπου στο κέντρο του πιάνου — η νότα-αναφορά μας.</li></ul>
+     <div class="tip"><b>Άσκηση:</b> Άνοιξε το «Πιάνο» και βρες όλα τα Ντο. Παίξέ τα από κάτω προς τα πάνω. Μετά βρες όλα τα Φα.</div>
+     <p>Χέρι: κάθισε ίσια, καρπός χαλαρός, δάχτυλα κυρτά σαν να κρατάς μπαλάκι. Παίξε με τις άκρες των δαχτύλων.</p>`},
+    {id:"p2",lvl:"beg",t:"Αριθμοί δαχτύλων & θέση Do (C position)",d:"Δαχτυλισμός 1-2-3-4-5, πρώτη μελωδία",
+     body:`<p>Στο πιάνο τα δάχτυλα αριθμούνται <b>1=αντίχειρας … 5=μικρό</b> και στα δύο χέρια.</p>
+     <p>Βάλε το δεξί χέρι στη <b>θέση Ντο</b>: αντίχειρας(1) στο Ντο, και κάθε δάχτυλο σε επόμενο λευκό → 1=Ντο 2=Ρε 3=Μι 4=Φα 5=Σολ.</p>
+     <h4>Πρώτη μελωδία: «Ντο-Ρε-Μι-Φα-Σολ» πάνω-κάτω</h4>
+     <p>Παίξε αργά 1-2-3-4-5 και μετά 5-4-3-2-1. Κράτα σταθερό παλμό με τον <b>μετρονόμο στα 60 BPM</b>.</p>
+     <div class="tip"><b>Στόχος:</b> ίση ένταση σε κάθε νότα, χωρίς να «σκοντάφτει» ο ρυθμός.</div>`},
+    {id:"p3",lvl:"beg",t:"Το αριστερό χέρι & τα δύο χέρια μαζί",d:"Βάση με το αριστερό, συντονισμός",
+     body:`<p>Βάλε το <b>αριστερό χέρι</b> μια οκτάβα κάτω, σε θέση Ντο (5=Ντο … 1=Σολ).</p>
+     <p>Άσκηση συντονισμού: παίξε <b>Ντο ταυτόχρονα και με τα δύο χέρια</b>, μετά Ρε, Μι… Ξεκίνα πολύ αργά.</p>
+     <div class="note"><b>Κλειδί επιτυχίας:</b> μην κοιτάς τα χέρια συνέχεια. Νιώσε τις αποστάσεις. Αν μπερδεύεσαι, χώρισε: πρώτα μόνο αριστερό, μετά μόνο δεξί, μετά μαζί.</div>`},
+    {id:"p4",lvl:"beg",t:"Η μείζονα κλίμακα Ντο (πέρασμα αντίχειρα)",d:"Το θεμέλιο δαχτύλισμα κλίμακας",
+     body:`<p>Η κλίμακα Ντο ματζόρε με το <b>δεξί χέρι</b>: δαχτυλισμός <b>1-2-3-1-2-3-4-5</b>.</p>
+     <p>Το μυστικό είναι το <b>πέρασμα του αντίχειρα</b> κάτω από το 3ο δάχτυλο μετά το Μι, για να συνεχίσεις ομαλά.</p>
+     <ul class="tick"><li>Ντο(1) Ρε(2) Μι(3) → αντίχειρας περνά → Φα(1) Σολ(2) Λα(3) Σι(4) Ντο(5).</li>
+     <li>Κατιούσα: 5-4-3-2-1-3-2-1 (το 3ο δάχτυλο περνά πάνω από τον αντίχειρα).</li></ul>
+     <div class="tip">Δες τη «Κλίμακες → Μείζονα» και πάτησε ▶ για να ακούσεις πώς πρέπει να ηχεί.</div>`},
+    {id:"p5",lvl:"int",t:"Πρώτες συγχορδίες: C, F, G",d:"Τρίφωνες συγχορδίες & αλλαγές",
+     body:`<p>Οι τρεις «βασιλικές» συγχορδίες σε Ντο ματζόρε: <b>C (Ντο-Μι-Σολ), F (Φα-Λα-Ντο), G (Σολ-Σι-Ρε)</b>.</p>
+     <p>Παίξέ τες με το αριστερό χέρι (δαχτυλισμός 5-3-1) και άλλαξε ανάμεσά τους αργά.</p>
+     <p><b>Ακολουθία-τραγούδι:</b> C – G – F – G. Παίξε κάθε συγχορδία για 4 χτύπους.</p>
+     <div class="tip">Άνοιξε «Συγχορδίες → Πιάνο» και δες/άκουσε C, F, G με το κουμπί ▶.</div>`},
+    {id:"p6",lvl:"int",t:"Συνοδεία: σπασμένες συγχορδίες & αρπισμοί",d:"Αριστερό χέρι σε μοτίβα",
+     body:`<p>Αντί να παίζεις τη συγχορδία «μπλοκ», σπάσ' την σε νότες (αρπισμός). Κλασικό μοτίβο <b>Άλμπερτι</b>: κάτω-πάνω-μεσαία-πάνω.</p>
+     <p>Για C: <b>Ντο – Σολ – Μι – Σολ</b> επαναλαμβανόμενα. Δίνει «κίνηση» στο κομμάτι.</p>
+     <div class="tip">Δούλεψέ το με μετρονόμο σε όγδοα (π.χ. 70 BPM). Δεξί χέρι μπορεί να παίξει απλή μελωδία από πάνω.</div>`},
+    {id:"p7",lvl:"int",t:"Ανεστραμμένες συγχορδίες",d:"Ομαλές μεταβάσεις με αναστροφές",
+     body:`<p>Μια συγχορδία μπορεί να παιχτεί με διαφορετική νότα από κάτω = <b>αναστροφή</b>.</p>
+     <p>C: θεμελιακή Ντο-Μι-Σολ · 1η αναστροφή Μι-Σολ-Ντο · 2η αναστροφή Σολ-Ντο-Μι.</p>
+     <p>Οι αναστροφές επιτρέπουν να αλλάζεις συγχορδίες <b>χωρίς μεγάλα άλματα</b> — τα δάχτυλα μένουν κοντά.</p>
+     <div class="note">Παράδειγμα ομαλής σύνδεσης C→G: παίξε G ως Σι-Ρε-Σολ (κοντά στο C) αντί για Σολ-Σι-Ρε.</div>`},
+    {id:"p8",lvl:"adv",t:"Ρετζίστρο, πεντάλ & δυναμική",d:"Έκφραση σαν επαγγελματίας",
+     body:`<p>Το <b>δεξί πεντάλ (sustain)</b> κρατά τις νότες να ηχούν. Κανόνας: <b>πάτα το ΑΦΟΥ παίξεις</b> τη νέα συγχορδία και σήκωσέ το ακριβώς όταν αλλάζεις — αλλιώς «θολώνει».</p>
+     <ul class="tick"><li><b>Δυναμική:</b> piano (p)=σιγά, forte (f)=δυνατά. Δώσε φράση: κορύφωση→ηρεμία.</li>
+     <li><b>Legato/staccato:</b> δεμένες vs κοφτές νότες — αλλάζουν τελείως τον χαρακτήρα.</li>
+     <li><b>Rubato:</b> ελαφρύ «τράβηγμα» του χρόνου για εκφραστικότητα (σε αργά κομμάτια).</li></ul>
+     <div class="tip">Ηχογράφησε τον εαυτό σου με το κινητό και άκουσε: είναι ίσιος ο ρυθμός; ακούγεται μουσική φράση ή μεμονωμένες νότες;</div>`},
+    {id:"p9",lvl:"adv",t:"Ανάγνωση παρτιτούρας εκ πρώτης όψεως",d:"Sight-reading στρατηγική",
+     body:`<p>Το sight-reading είναι δεξιότητα που χτίζεται καθημερινά με <b>νέο, εύκολο</b> υλικό.</p>
+     <ul class="tick"><li>Πριν παίξεις: δες οπλισμό, μέτρο, εύρος νοτών, δύσκολα σημεία.</li>
+     <li>Κοίτα <b>μπροστά</b> (1-2 χτύπους) από αυτό που παίζεις.</li>
+     <li>Μην σταματάς για λάθη — κράτα τον ρυθμό. Ακρίβεια ρυθμού > ακρίβεια νότας στην αρχή.</li>
+     <li>Διάβαζε <b>σχήματα/διαστήματα</b>, όχι νότα-νότα (π.χ. «ανεβαίνει με τρίτες»).</li></ul>
+     <div class="tip">Κάνε καθημερινά τις «Ασκήσεις → Ανάγνωση νότας» για ταχύτητα αναγνώρισης.</div>`}
+  ],
+  guitar:[
+    {id:"g1",lvl:"beg",t:"Κράτημα, κούρδισμα & ανατομία",d:"Χορδές, τάστα, στάση σώματος",
+     body:`<p>Οι 6 χορδές από την πιο χοντρή (πάνω) στην πιο λεπτή: <b>Mi – Λα – Ρε – Σολ – Σι – Mi</b> (E-A-D-G-B-e).</p>
+     <div class="tip"><b>Μνημονικό κουρδίσματος:</b> «<b>Ε</b>να <b>Α</b>στρο <b>Δ</b>ρόμο <b>G</b>υρίζει <b>Β</b>ραδινό <b>Ε</b>ρωτικό» — ή στα αγγλικά «Eddie Ate Dynamite, Good Bye Eddie».</p></div>
+     <ul class="tick"><li>Κάθισε ίσια, κιθάρα στο δεξί πόδι (δεξιόχειρες), λαιμός ελαφρώς ψηλά.</li>
+     <li>Αριστερός αντίχειρας πίσω από τον λαιμό, όχι τυλιγμένος (στην αρχή).</li>
+     <li>Πάτα τις χορδές <b>ακριβώς πίσω από το τάστο</b>, με τις άκρες των δαχτύλων.</li></ul>
+     <p>Άνοιξε την «Κιθάρα» και παίξε τις 6 ανοιχτές χορδές μία-μία.</p>`},
+    {id:"g2",lvl:"beg",t:"Πρώτες ανοιχτές συγχορδίες: Em, Am, E",d:"Οι πιο εύκολες για ξεκίνημα",
+     body:`<p>Ξεκίνα με το <b>Em</b> (Μι μινόρε) — μόνο 2 δάχτυλα:</p>
+     <ul class="tick"><li><b>Em:</b> 2ο δάχτυλο στη χορδή Λα (2ο τάστο), 3ο δάχτυλο στη χορδή Ρε (2ο τάστο). Παίξε όλες τις χορδές.</li>
+     <li><b>Am:</b> πρόσθεσε 1ο δάχτυλο στη Σι (1ο τάστο). Μην παίξεις τη χοντρή Mi.</li>
+     <li><b>E:</b> σαν Em + 1ο δάχτυλο στη Σολ (1ο τάστο).</li></ul>
+     <div class="tip">Δες «Κιθάρα → Δείξε συγχορδία → Em/Am/E» για τις ακριβείς δαχτυλιές και πάτα «🎸 Παίξε».</div>
+     <div class="note"><b>Στόχος:</b> κάθε χορδή να ηχεί καθαρά. Αν «βουίζει», πάτα πιο κοντά στο τάστο και πιο δυνατά με την άκρη του δαχτύλου.</div>`},
+    {id:"g3",lvl:"beg",t:"Δεξί χέρι: strumming & ρυθμός",d:"Πάνω-κάτω πενιές",
+     body:`<p>Κράτα την πένα χαλαρά. Η κίνηση έρχεται από τον <b>καρπό</b>, όχι το χέρι.</p>
+     <p>Βασικό πατρόν σε 4/4: <b>κάτω, κάτω, πάνω, κάτω, πάνω</b> (D D U D U). Μέτρα «1 2και 3και».</p>
+     <div class="tip">Βάλε μετρονόμο 70 BPM, κράτα ένα Em και δούλεψε ΜΟΝΟ το δεξί χέρι μέχρι να γίνει αυτόματο.</div>`},
+    {id:"g4",lvl:"beg",t:"Αλλαγές συγχορδιών: Em – Am – C – G",d:"Το πιο σημαντικό σκαλοπάτι",
+     body:`<p>Το δύσκολο δεν είναι να κρατάς μια συγχορδία — είναι να <b>αλλάζεις</b> γρήγορα.</p>
+     <ul class="tick"><li>Άσκηση «1 λεπτό»: άλλαξε Em↔Am όσες φορές μπορείς σε 1 λεπτό. Σημείωσε τον αριθμό, βελτίωσέ τον.</li>
+     <li>Ψάξε <b>κοινά δάχτυλα</b> που μένουν στη θέση τους (π.χ. Am→C: το 1ο & 2ο δάχτυλο σχεδόν δεν κουνιούνται).</li>
+     <li>Κοίτα πού πηγαίνεις <b>πριν</b> τελειώσει το μέτρο.</li></ul>
+     <p><b>Πρώτο τραγούδι:</b> Em – C – G – D (4 χτύποι το καθένα) — παίζει αμέτρητα ποπ κομμάτια.</p>`},
+    {id:"g5",lvl:"int",t:"Η συγχορδία μπαρέ F (και το σύστημα)",d:"Το «τείχος» κάθε αρχάριου",
+     body:`<p>Το <b>F</b> απαιτεί να πατήσεις πολλές χορδές με τον δείκτη (μπαρέ).</p>
+     <ul class="tick"><li>Ίσιωσε τον δείκτη στο 1ο τάστο σε όλες τις χορδές· κύλησέ τον ελαφρώς στο πλάι (σκληρότερο σημείο).</li>
+     <li>Αντίχειρας χαμηλά, πίσω από τον λαιμό, για μόχλευση.</li>
+     <li>Ξεκίνα με το εύκολο <b>Fmaj7</b> (χωρίς μπαρέ) και πέρνα σταδιακά στο πλήρες F.</li></ul>
+     <div class="note">Το μπαρέ ξεκλειδώνει <b>κινητά σχήματα</b>: το σχήμα του E μετακινούμενο δίνει όλες τις ματζόρε, το σχήμα του Am δίνει όλες τις μινόρε!</div>`},
+    {id:"g6",lvl:"int",t:"Κινητά σχήματα & CAGED",d:"Παίξε κάθε συγχορδία παντού",
+     body:`<p>Το σύστημα <b>CAGED</b> λέει ότι κάθε ματζόρε συγχορδία βρίσκεται σε 5 σχήματα (C-A-G-E-D) κατά μήκος του λαιμού.</p>
+     <ul class="tick"><li>Σχήμα E (μπαρέ): θεμέλιος στη χοντρή Mi. Στο 5ο τάστο = Λα.</li>
+     <li>Σχήμα A (μπαρέ): θεμέλιος στη Λα. Στο 3ο τάστο = Ντο.</li></ul>
+     <p>Μάθε πού είναι οι νότες στη χορδή Mi και Λα (δες «Κιθάρα» με ονόματα) — έτσι βρίσκεις οποιαδήποτε μπαρέ συγχορδία αμέσως.</p>`},
+    {id:"g7",lvl:"int",t:"Fingerpicking (δαχτυλική τεχνική)",d:"Travis picking & αρπισμοί",
+     body:`<p>Αντί για πένα, παίξε με τα δάχτυλα: <b>p</b>=αντίχειρας (μπάσες χορδές), <b>i-m-a</b>=δείκτης-μέσος-παράμεσος.</p>
+     <p>Βασικό πατρόν (Travis): αντίχειρας κρατά σταθερό παλμό στις μπάσες, τα άλλα δάχτυλα παίζουν από πάνω.</p>
+     <div class="tip">Δοκίμασε σε Am: p(Λα) – i(Σολ) – m(Σι) – i(Σολ), επαναλαμβανόμενα. Αργά με μετρονόμο.</div>`},
+    {id:"g8",lvl:"adv",t:"Πεντατονική & πρώτα σόλο",d:"Αυτοσχεδιασμός στο μανούχι",
+     body:`<p>Η <b>πεντατονική ελάσσονα</b> είναι η κλίμακα των σόλο σε rock/blues/pop.</p>
+     <p>«Σχήμα 1» της Λα πεντατονικής ελάσσονας (5ο τάστο): εύκολο, δύο νότες ανά χορδή.</p>
+     <ul class="tick"><li>Δούλεψέ τη πάνω-κάτω με μετρονόμο, εναλλάξ πενιές (κάτω-πάνω).</li>
+     <li>Αυτοσχεδίασε πάνω σε μια απλή βάση (π.χ. Am–G–F) χρησιμοποιώντας μόνο αυτές τις νότες.</li>
+     <li>Πρόσθεσε <b>bends, slides, hammer-ons</b> για εκφραστικότητα.</li></ul>
+     <div class="tip">Δες «Κλίμακες → Πεντατονική ελάσσονα» από Λα και άκουσε τον ήχο της.</div>`},
+    {id:"g9",lvl:"adv",t:"Μουσικότητα: δυναμική, timing, ρεπερτόριο",d:"Από παίκτης σε μουσικός",
+     body:`<p>Η τεχνική υπηρετεί τη μουσική. Για να ακούγεσαι επαγγελματίας:</p>
+     <ul class="tick"><li><b>Timing:</b> παίξε «μέσα στο ρυθμό». Εξασκήσου με μετρονόμο σε αργά tempo — εκεί φαίνεται η αλήθεια.</li>
+     <li><b>Δυναμική & ηχόχρωμα:</b> άλλαξε ένταση, παίξε κοντά/μακριά από τη γέφυρα για διαφορετικό χρώμα.</li>
+     <li><b>Σίγαση (muting):</b> καθάρισε ανεπιθύμητο θόρυβο από χορδές που δεν παίζεις.</li>
+     <li><b>Ρεπερτόριο:</b> μάθε ολόκληρα κομμάτια, όχι μόνο αποσπάσματα. Παίξε για κόσμο.</li></ul>
+     <div class="note">Ηχογραφήσου τακτικά. Το αυτί σου είναι ο καλύτερος δάσκαλος όταν ακούς κριτικά.</div>`}
+  ]
+};
+let lessonInst="piano";
+function renderLessonList(){
+  const list=LESSONS[lessonInst];
+  const doneCount=list.filter(l=>Store.data.done[l.id]).length;
+  const pct=Math.round(doneCount/list.length*100);
+  document.getElementById("lessonBar").style.width=pct+"%";
+  document.getElementById("lessonProgTxt").textContent=`Ολοκληρωμένα ${doneCount} από ${list.length} μαθήματα ${lessonInst==="piano"?"πιάνου":"κιθάρας"} (${pct}%).`;
+  const badge={beg:["beg","Αρχάριος"],int:["int","Μεσαίος"],adv:["adv","Προχωρημένος"]};
+  document.getElementById("lessonList").innerHTML=list.map((l,i)=>{
+    const done=Store.data.done[l.id]?"done":"";
+    const b=badge[l.lvl];
+    return `<div class="lrow ${done}" data-lid="${l.id}"><div class="num">${done?"✓":i+1}</div>
+      <div class="meta"><b>${l.t}</b><span>${l.d}</span></div>
+      <span class="badge ${b[0]}">${b[1]}</span></div>`;
+  }).join("");
+  document.getElementById("lessonList").querySelectorAll(".lrow").forEach(r=>r.addEventListener("click",()=>openLesson(r.dataset.lid)));
+  document.getElementById("lessonDetailCard").style.display="none";
+}
+function openLesson(id){
+  const l=LESSONS[lessonInst].find(x=>x.id===id); if(!l) return;
+  document.getElementById("lessonTitle").textContent=l.t;
+  document.getElementById("lessonBody").innerHTML=l.body;
+  const card=document.getElementById("lessonDetailCard"); card.style.display="block";
+  const doneBtn=document.getElementById("lessonDone");
+  doneBtn.textContent = Store.data.done[id]?"✓ Ολοκληρωμένο (πάτα για αναίρεση)":"✓ Ολοκλήρωσα το μάθημα";
+  doneBtn.onclick=()=>{ if(Store.data.done[id]) delete Store.data.done[id]; else Store.data.done[id]=Date.now(); Store.save(); renderLessonList(); openLesson(id); };
+  document.getElementById("lessonBack").onclick=()=>{ card.style.display="none"; };
+  card.scrollIntoView({behavior:"smooth"});
+}
+document.querySelectorAll("[data-linst]").forEach(c=>c.addEventListener("click",()=>{
+  document.querySelectorAll("[data-linst]").forEach(x=>x.classList.remove("active"));
+  c.classList.add("active"); lessonInst=c.dataset.linst; renderLessonList();
+}));
+
+/* =========================================================================
+   EAR / QUIZ engine
+   ========================================================================= */
+const QUIZ_MODES={
+  noteName:{label:"🎹 Ονομασία νότας (ήχος)"},
+  interval:{label:"📏 Αναγνώριση διαστήματος"},
+  majorMinor:{label:"😀/😢 Ματζόρε ή Μινόρε;"},
+  chordType:{label:"🎼 Τύπος συγχορδίας"},
+  readNote:{label:"👀 Ανάγνωση νότας (πεντάγραμμο)"}
+};
+let quizMode="noteName", quizAnswer=null, quizLocked=false;
+function renderQuizModes(){
+  const c=document.getElementById("quizModes");
+  c.innerHTML=Object.keys(QUIZ_MODES).map(k=>`<span class="chip ${k===quizMode?'active':''}" data-qm="${k}">${QUIZ_MODES[k].label}</span>`).join("");
+  c.querySelectorAll(".chip").forEach(ch=>ch.addEventListener("click",()=>{ quizMode=ch.dataset.qm; renderQuizModes(); newQuestion(); }));
+}
+function updateQuizStats(){
+  document.getElementById("qScore").textContent=Store.data.score;
+  document.getElementById("qStreak").textContent=Store.data.streak;
+  document.getElementById("qAcc").textContent = Store.data.qTotal? Math.round(Store.data.qCorrect/Store.data.qTotal*100)+"%":"–";
+}
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+
+function newQuestion(){
+  quizLocked=false; quizAnswer=null;
+  const area=document.getElementById("quizArea");
+  if(!Audio.ready && quizMode!=="readNote"){ /* still ok, will enable on play */ }
+  if(quizMode==="noteName"){
+    const pc=Math.floor(Math.random()*12); const midi=60+pc; quizAnswer=pc;
+    const opts=shuffle([pc, ...shuffle(ROOTS12.filter(x=>x!==pc)).slice(0,3)]);
+    area.innerHTML=`<p class="lead">Άκουσε τη νότα και διάλεξε το όνομά της.</p>
+      <div class="btnrow"><button class="gold" id="qPlay">🔊 Άκουσε ξανά</button></div>
+      <div class="quiz-opts" id="qOpts">${opts.map(o=>`<div class="qopt" data-a="${o}">${NOTE_LATIN[o]}</div>`).join("")}</div>
+      <div id="qFb"></div>`;
+    document.getElementById("qPlay").onclick=()=>{ if(!Audio.ready)enableAudio(); Audio.playPiano(midi,1.2,0.85); };
+    setTimeout(()=>{ if(Audio.ready) Audio.playPiano(midi,1.2,0.85); },250);
+    bindOpts(o=>o===quizAnswer);
+  }
+  else if(quizMode==="interval"){
+    const intervals=[[0,"Καθαρή 1η"],[2,"Μεγάλη 2η"],[3,"Μικρή 3η"],[4,"Μεγάλη 3η"],[5,"Καθαρή 4η"],[7,"Καθαρή 5η"],[9,"Μεγάλη 6η"],[12,"Οκτάβα"]];
+    const correct=pick(intervals); quizAnswer=correct[1];
+    const base=60+Math.floor(Math.random()*5);
+    const opts=shuffle([correct, ...shuffle(intervals.filter(i=>i[1]!==correct[1])).slice(0,3)]);
+    area.innerHTML=`<p class="lead">Ακούγονται δύο νότες. Ποιο είναι το διάστημα;</p>
+      <div class="btnrow"><button class="gold" id="qPlay">🔊 Άκουσε ξανά</button><button class="ghost sm" id="qHarm">Μαζί (αρμονικά)</button></div>
+      <div class="quiz-opts" style="grid-template-columns:1fr 1fr" id="qOpts">${opts.map(o=>`<div class="qopt" data-a="${o[1]}">${o[1]}</div>`).join("")}</div>
+      <div id="qFb"></div>`;
+    const playMel=()=>{ if(!Audio.ready)enableAudio(); Audio.playPiano(base,0.7,0.85); setTimeout(()=>Audio.playPiano(base+correct[0],0.9,0.85),600); };
+    const playHarm=()=>{ if(!Audio.ready)enableAudio(); Audio.playPiano(base,1.2,0.8); Audio.playPiano(base+correct[0],1.2,0.8); };
+    document.getElementById("qPlay").onclick=playMel;
+    document.getElementById("qHarm").onclick=playHarm;
+    setTimeout(()=>{ if(Audio.ready) playMel(); },250);
+    bindOpts(a=>a===quizAnswer);
+  }
+  else if(quizMode==="majorMinor"){
+    const isMajor=Math.random()<0.5; quizAnswer=isMajor?"Ματζόρε":"Μινόρε";
+    const base=60+Math.floor(Math.random()*8);
+    const ints=isMajor?[0,4,7]:[0,3,7];
+    area.innerHTML=`<p class="lead">Άκουσε τη συγχορδία. Ακούγεται χαρούμενη (ματζόρε) ή λυπημένη (μινόρε);</p>
+      <div class="btnrow"><button class="gold" id="qPlay">🔊 Άκουσε ξανά</button></div>
+      <div class="quiz-opts" style="grid-template-columns:1fr 1fr" id="qOpts">
+        <div class="qopt" data-a="Ματζόρε">😀 Ματζόρε</div><div class="qopt" data-a="Μινόρε">😢 Μινόρε</div></div>
+      <div id="qFb"></div>`;
+    const play=()=>{ if(!Audio.ready)enableAudio(); ints.forEach(iv=>Audio.playPiano(base+iv,1.4,0.8)); };
+    document.getElementById("qPlay").onclick=play; setTimeout(()=>{ if(Audio.ready) play(); },250);
+    bindOpts(a=>a===quizAnswer);
+  }
+  else if(quizMode==="chordType"){
+    const types=[["maj","Ματζόρε"],["min","Μινόρε"],["dom7","7η (C7)"],["dim","Ελαττωμένη"]];
+    const correct=pick(types); quizAnswer=correct[1];
+    const base=60+Math.floor(Math.random()*6);
+    const ints=CHORD_TYPES[correct[0]].int;
+    const opts=shuffle(types);
+    area.innerHTML=`<p class="lead">Τι τύπος συγχορδίας είναι;</p>
+      <div class="btnrow"><button class="gold" id="qPlay">🔊 Άκουσε ξανά</button></div>
+      <div class="quiz-opts" style="grid-template-columns:1fr 1fr" id="qOpts">${opts.map(o=>`<div class="qopt" data-a="${o[1]}">${o[1]}</div>`).join("")}</div>
+      <div id="qFb"></div>`;
+    const play=()=>{ if(!Audio.ready)enableAudio(); ints.forEach(iv=>Audio.playPiano(base+iv,1.6,0.78)); };
+    document.getElementById("qPlay").onclick=play; setTimeout(()=>{ if(Audio.ready) play(); },250);
+    bindOpts(a=>a===quizAnswer);
+  }
+  else if(quizMode==="readNote"){
+    // treble clef, notes from C4..A5 that sit on lines/spaces
+    const pool=[[60,"Ντο"],[62,"Ρε"],[64,"Μι"],[65,"Φα"],[67,"Σολ"],[69,"Λα"],[71,"Σι"],[72,"Ντο"],[74,"Ρε"],[76,"Μι"],[77,"Φα"],[79,"Σολ"]];
+    const correct=pick(pool); quizAnswer=correct[1];
+    const opts=shuffle([correct, ...shuffle(pool.filter(p=>p[1]!==correct[1])).slice(0,3)]);
+    area.innerHTML=`<p class="lead">Ποια νότα είναι αυτή στο πεντάγραμμο (κλειδί Σολ);</p>
+      <div class="staff-box">${staffSVG(correct[0])}</div>
+      <div class="btnrow"><button class="ghost sm" id="qPlay">🔊 Άκουσέ την</button></div>
+      <div class="quiz-opts" id="qOpts">${opts.map(o=>`<div class="qopt" data-a="${o[1]}">${o[1]}</div>`).join("")}</div>
+      <div id="qFb"></div>`;
+    document.getElementById("qPlay").onclick=()=>{ if(!Audio.ready)enableAudio(); Audio.playPiano(correct[0],1.2,0.85); };
+    bindOpts(a=>a===quizAnswer);
+  }
+}
+function bindOpts(isCorrectFn){
+  document.querySelectorAll("#qOpts .qopt").forEach(op=>{
+    op.addEventListener("click",()=>{
+      if(quizLocked) return; quizLocked=true;
+      const val=op.dataset.a;
+      const correct = isCorrectFn(isNaN(+val)?val:+val);
+      Store.data.qTotal++;
+      if(correct){
+        op.classList.add("correct");
+        Store.data.score+=10; Store.data.streak++; Store.data.qCorrect++;
+        if(Store.data.streak>Store.data.bestStreak) Store.data.bestStreak=Store.data.streak;
+        document.getElementById("qFb").innerHTML=`<div class="tip">✅ Σωστό! +10 πόντοι.</div>`;
+      } else {
+        op.classList.add("wrong");
+        Store.data.streak=0;
+        // reveal correct
+        document.querySelectorAll("#qOpts .qopt").forEach(o=>{ const v=o.dataset.a; if(isCorrectFn(isNaN(+v)?v:+v)) o.classList.add("correct"); });
+        document.getElementById("qFb").innerHTML=`<div class="note">❌ Λάθος. Η σωστή απάντηση επισημαίνεται.</div>`;
+      }
+      Store.save(); updateQuizStats();
+      const fb=document.getElementById("qFb");
+      const nb=document.createElement("button"); nb.className="gold"; nb.textContent="Επόμενη ➜"; nb.style.marginTop="10px";
+      nb.onclick=newQuestion; fb.appendChild(nb);
+    });
+  });
+}
+function staffSVG(midi){
+  // treble clef staff, draw a note at correct vertical position
+  const W=260,H=140, left=70, right=240, top=40, gap=10; // gap between lines
+  // reference: E4(64) is bottom line. Each diatonic step = gap/2.
+  const diatonicIndex={0:0,2:1,4:2,5:3,7:4,9:5,11:6}; // C..B within octave -> steps
+  function stepsFromE4(m){
+    // count diatonic steps from E4
+    const e4=64;
+    let steps=0, cur=e4;
+    if(m>=e4){ let n=e4; while(n<m){ n=nextDiatonic(n); steps++; } }
+    else { let n=e4; while(n>m){ n=prevDiatonic(n); steps--; } }
+    return steps;
+  }
+  function nextDiatonic(m){ let n=m+1; while(![0,2,4,5,7,9,11].includes(((n%12)+12)%12)) n++; return n; }
+  function prevDiatonic(m){ let n=m-1; while(![0,2,4,5,7,9,11].includes(((n%12)+12)%12)) n--; return n; }
+  const bottomY=top+4*gap; // E4 line y
+  const steps=stepsFromE4(midi);
+  const noteY=bottomY - steps*(gap/2);
+  let s=`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">`;
+  for(let i=0;i<5;i++){ const y=top+i*gap; s+=`<line x1="${left-20}" y1="${y}" x2="${right}" y2="${y}" stroke="#222" stroke-width="1"/>`; }
+  // treble clef (simple text glyph)
+  s+=`<text x="${left-58}" y="${top+4*gap+4}" font-size="${gap*6}" font-family="serif" fill="#111">𝄞</text>`;
+  // ledger lines if needed (below E4 for C4/D4, above F5 for high notes)
+  const nx=(left+right)/2;
+  // add ledger for middle C (60) which is below staff
+  for(let ly=bottomY+gap; ly<=noteY+0.1; ly+=gap){ s+=`<line x1="${nx-14}" y1="${ly}" x2="${nx+14}" y2="${ly}" stroke="#222" stroke-width="1"/>`; }
+  for(let ly=top-gap; ly>=noteY-0.1; ly-=gap){ s+=`<line x1="${nx-14}" y1="${ly}" x2="${nx+14}" y2="${ly}" stroke="#222" stroke-width="1"/>`; }
+  // note head
+  s+=`<ellipse cx="${nx}" cy="${noteY}" rx="8" ry="6" fill="#111" transform="rotate(-20 ${nx} ${noteY})"/>`;
+  s+=`<line x1="${nx+7}" y1="${noteY-2}" x2="${nx+7}" y2="${noteY-40}" stroke="#111" stroke-width="1.6"/>`;
+  s+=`</svg>`;
+  return s;
+}
+
+/* =========================================================================
+   METRONOME
+   ========================================================================= */
+let metro = { running:false, bpm:90, meter:4, beat:0, timer:null, nextTime:0 };
+function renderBeatDots(){
+  const c=document.getElementById("beatDots"); c.innerHTML="";
+  for(let i=0;i<metro.meter;i++){ const d=document.createElement("div"); d.className="beat"+(i===0?" accent":""); c.appendChild(d); }
+}
+function metroTick(){
+  const dots=document.querySelectorAll("#beatDots .beat");
+  dots.forEach(d=>d.classList.remove("on"));
+  const accent=metro.beat===0;
+  if(dots[metro.beat]) dots[metro.beat].classList.add("on");
+  Audio.click(accent);
+  metro.beat=(metro.beat+1)%metro.meter;
+}
+function startMetro(){
+  if(!Audio.ready) enableAudio();
+  metro.running=true; metro.beat=0;
+  document.getElementById("metroToggle").textContent="⏸ Στοπ";
+  const interval=()=>60000/metro.bpm;
+  metroTick();
+  metro.timer=setInterval(metroTick, interval());
+}
+function stopMetro(){
+  metro.running=false; clearInterval(metro.timer); metro.timer=null;
+  document.getElementById("metroToggle").textContent="▶ Έναρξη";
+  document.querySelectorAll("#beatDots .beat").forEach(d=>d.classList.remove("on"));
+}
+function setBpm(v){
+  metro.bpm=+v; document.getElementById("bpmVal").textContent=v; document.getElementById("bpmSlider").value=v;
+  if(metro.running){ clearInterval(metro.timer); metro.timer=setInterval(metroTick,60000/metro.bpm); }
+}
+document.getElementById("metroToggle").addEventListener("click",()=>{ metro.running?stopMetro():startMetro(); });
+document.getElementById("bpmSlider").addEventListener("input",e=>setBpm(e.target.value));
+document.getElementById("meter").addEventListener("change",e=>{ metro.meter=+e.target.value; metro.beat=0; renderBeatDots(); });
+document.querySelectorAll("[data-bpmset]").forEach(b=>b.addEventListener("click",()=>setBpm(b.dataset.bpmset)));
+
+/* =========================================================================
+   SONGWRITER — chord parsing, playback, generation, custom editor
+   ========================================================================= */
+const CHORD_INTERVALS = {
+  "":[0,4,7], "m":[0,3,7], "7":[0,4,7,10], "m7":[0,3,7,10], "maj7":[0,4,7,11],
+  "dim":[0,3,6], "aug":[0,4,8], "+":[0,4,8], "sus4":[0,5,7], "sus2":[0,2,7],
+  "6":[0,4,7,9], "m6":[0,3,7,9], "9":[0,4,7,10,14]
+};
+function parseChordName(name){
+  if(!name) return null;
+  const m = name.trim().match(/^([A-G])([#b]?)(.*)$/);
+  if(!m) return null;
+  let pc = NOTE_LETTER.indexOf(m[1]);
+  if(m[2]==="#") pc=(pc+1)%12; if(m[2]==="b") pc=(pc+11)%12;
+  let suf = m[3];
+  if(!(suf in CHORD_INTERVALS)) suf = suf.replace("maj","maj").replace("M7","maj7");
+  if(!(suf in CHORD_INTERVALS)) suf="";
+  return {rootPc:pc, suffix:suf, intervals:CHORD_INTERVALS[suf]||[0,4,7], display:name.trim()};
+}
+function chordToMidis(name){
+  const c=parseChordName(name); if(!c) return {rootPc:0,midis:[48,52,55]};
+  let rootMidi = 43 + c.rootPc;        // roots between G2 and F#3
+  if(rootMidi>54) rootMidi-=12;
+  const midis = c.intervals.map(iv=>rootMidi+iv);
+  midis.push(rootMidi+12);
+  return {rootPc:c.rootPc, midis, root:c};
+}
+/* --- play a single strum/hit --- */
+function hitChord(midis, inst, dur, subset){
+  if(!Audio.ready) return;
+  const notes = subset || midis;
+  notes.forEach((mm,i)=> setTimeout(()=>{ inst==="piano"?Audio.playPiano(mm,dur,0.55):Audio.playGuitar(mm,dur,0.6); }, i*20));
+}
+/* --- feel patterns: return array of hits over `beats` beats --- */
+function feelHits(feel, beats, midis){
+  const hits=[]; // {off (in beats), dur, subset}
+  const bass=[midis[0]], full=midis;
+  if(feel==="arpeggio"){
+    for(let b=0;b<beats;b++){ const note=midis[b % midis.length]; hits.push({off:b,dur:0.9,subset:[note]}); }
+  } else if(feel==="rock"){
+    for(let b=0;b<beats;b++){ hits.push({off:b,dur:0.5,subset:full}); if(b<beats-0) hits.push({off:b+0.5,dur:0.35,subset:full}); }
+  } else if(feel==="reggae"){
+    for(let b=0;b<beats;b++){ hits.push({off:b+0.5,dur:0.28,subset:full.slice(1)}); }
+  } else if(feel==="blues"){
+    for(let b=0;b<beats;b++){ hits.push({off:b,dur:0.4,subset:full}); hits.push({off:b+0.66,dur:0.3,subset:full}); }
+  } else if(feel==="waltz"){
+    hits.push({off:0,dur:0.4,subset:bass}); // oom
+    for(let b=1;b<beats;b++){ hits.push({off:b,dur:0.5,subset:full.slice(1)}); } // pa-pa
+  } else if(feel==="jazz"){
+    hits.push({off:0,dur:0.35,subset:bass});
+    for(let b=1;b<beats;b++){ hits.push({off:b+ (b%2?0.0:0.0),dur:0.45,subset:full}); } // comping on beats
+    hits.push({off:beats-0.34,dur:0.3,subset:full}); // swing push
+  } else if(feel==="funk"){
+    for(let b=0;b<beats;b++){ [0,0.25,0.5,0.75].forEach((s,i)=>{ hits.push({off:b+s,dur:0.14,subset: i===0?full:full.slice(1)}); }); }
+  } else if(feel==="bossa"){
+    [0,1.5,2,3.5].forEach(o=>{ if(o<beats) hits.push({off:o,dur:0.6,subset:full}); });
+    hits.push({off:0,dur:0.5,subset:bass});
+  } else { // strum (default): D on 1, D on 2, U on 2.5, D on 3, U on 3.5 pattern scaled
+    const pat=[0,1,1.5,2,2.5,3,3.5]; pat.forEach(o=>{ if(o<beats) hits.push({off:o,dur:0.5,subset:full}); });
+  }
+  return hits;
+}
+/* --- Song player --- */
+let songToken=0, songTimers=[];
+function stopSong(){
+  songToken++; songTimers.forEach(t=>clearTimeout(t)); songTimers=[];
+  document.querySelectorAll(".chordtok.playing").forEach(e=>e.classList.remove("playing"));
+  const pb=document.getElementById("swPlayBtn"); if(pb) pb.textContent="▶ Παίξε το τραγούδι";
+}
+/* seq: array of {name, beats, tokId?} */
+function playSong(seq, bpm, feel, inst){
+  stopSong();
+  const myToken=++songToken;
+  const beatDur=60/bpm;
+  let t=0; // seconds
+  const pb=document.getElementById("swPlayBtn"); if(pb) pb.textContent="⏸ Στοπ";
+  seq.forEach((ch)=>{
+    const {midis}=chordToMidis(ch.name);
+    const hits=feelHits(feel, ch.beats, midis);
+    // highlight
+    if(ch.tokId){
+      const at=t*1000;
+      songTimers.push(setTimeout(()=>{ if(myToken!==songToken) return;
+        document.querySelectorAll(".chordtok.playing").forEach(e=>e.classList.remove("playing"));
+        const el=document.getElementById(ch.tokId); if(el){ el.classList.add("playing"); el.scrollIntoView({block:"nearest",behavior:"smooth"}); }
+      }, at));
+    }
+    hits.forEach(h=>{
+      const at=(t + h.off*beatDur)*1000;
+      songTimers.push(setTimeout(()=>{ if(myToken!==songToken) return; hitChord(midis, inst, h.dur, h.subset); }, at));
+    });
+    t += ch.beats*beatDur;
+  });
+  songTimers.push(setTimeout(()=>{ if(myToken===songToken) stopSong(); }, t*1000+400));
+}
+
+/* --- Print / export to PDF via isolated iframe (offline) --- */
+function printSong(){
+  const out=document.getElementById("swOutput");
+  const chart=out.querySelector(".songchart");
+  if(!chart){ alert("Δημιούργησε ή απόδωσε πρώτα ένα τραγούδι."); return; }
+  const title=(out.querySelector("h2")?out.querySelector("h2").innerText.replace(/^🎼\s*/,""):"Τραγούδι");
+  const kv=out.querySelector(".kv")?out.querySelector(".kv").outerHTML:"";
+  const html=`<!doctype html><html lang="el"><head><meta charset="utf-8"><title>${title}</title><style>
+    body{font-family:'Segoe UI',Arial,sans-serif;color:#111;padding:26px;max-width:720px;margin:0 auto}
+    h1{font-size:22px;margin:0 0 4px;border-bottom:2px solid #c00;padding-bottom:6px}
+    .kv{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:13px;margin:10px 0 18px}
+    .kv b{color:#000;font-weight:700} .song-sec{margin-bottom:14px;page-break-inside:avoid}
+    .song-label{font-weight:800;text-transform:uppercase;font-size:11px;color:#c00;letter-spacing:.5px;margin-bottom:2px}
+    .song-line{line-height:2.5;white-space:pre-wrap} .lyrseg{color:#111;font-size:15px}
+    .chordtok{color:#c00;font-weight:800;font-size:12px;margin-right:2px;vertical-align:top}
+    .foot{margin-top:26px;color:#999;font-size:11px;border-top:1px solid #ccc;padding-top:8px}
+  </style></head><body><h1>${title}</h1>${kv}${chart.outerHTML}
+  <div class="foot">🎵 ΜΟΥΣΙΚΗ ΣΧΟΛΗ 360° — © by Chronis Makris · Αρχείο → Εκτύπωση → «Αποθήκευση ως PDF»</div></body></html>`;
+  const ifr=document.createElement("iframe");
+  ifr.style.cssText="position:fixed;right:0;bottom:0;width:0;height:0;border:0;opacity:0";
+  document.body.appendChild(ifr);
+  const d=ifr.contentWindow.document; d.open(); d.write(html); d.close();
+  setTimeout(()=>{ try{ ifr.contentWindow.focus(); ifr.contentWindow.print(); }catch(e){} setTimeout(()=>ifr.remove(),1500); }, 350);
+}
+
+/* --- Styles & roman→chord --- */
+const MAJ_OFF={1:0,2:2,3:4,4:5,5:7,6:9,7:11};
+const MIN_OFF={1:0,2:2,3:3,4:5,5:7,6:8,7:10};
+const ROMAN={i:1,ii:2,iii:3,iv:4,v:5,vi:6,vii:7};
+function romanToChord(roman, keyPc, mode){
+  const mm=roman.match(/^([iv]+|[IV]+)(.*)$/); if(!mm) return "C";
+  const deg=ROMAN[mm[1].toLowerCase()]||1;
+  const isMinor = mm[1]===mm[1].toLowerCase();
+  const off=(mode==="minor"?MIN_OFF:MAJ_OFF)[deg];
+  const rootPc=(keyPc+off)%12;
+  let suf = isMinor ? "m" : "";
+  const extra=mm[2]||"";
+  if(extra.includes("°")||extra.includes("dim")){ suf="dim"; }
+  if(extra.includes("7")){ suf = isMinor? "m7" : (extra.includes("maj")?"maj7":"7"); }
+  return NOTE_LETTER[rootPc]+suf;
+}
+const SW_STYLES = {
+  ballad:{name:"🕯️ Μπαλάντα", bpm:70, meter:4, feel:"arpeggio", mode:"major",
+    verse:["I","V","vi","IV"], chorus:["vi","IV","I","V"], strum:"Αργός αρπισμός p-i-m-i, μία συγχορδία ανά μέτρο."},
+  pop:{name:"🎈 Ποπ", bpm:104, meter:4, feel:"strum", mode:"major",
+    verse:["I","V","vi","IV"], chorus:["I","V","vi","IV"], strum:"Πενιές D-DU-UDU, χαρούμενη διάθεση."},
+  rock:{name:"🤘 Ροκ", bpm:130, meter:4, feel:"rock", mode:"major",
+    verse:["I","IV","V","IV"], chorus:["vi","IV","I","V"], strum:"Δυνατές κοφτές πενιές σε κάθε χτύπο (power chords)."},
+  laiko:{name:"🇬🇷 Λαϊκό / Έντεχνο", bpm:96, meter:4, feel:"arpeggio", mode:"minor",
+    verse:["i","VII","VI","V7"], chorus:["i","iv","V7","i"], strum:"Μελαγχολικός αρπισμός σε ελάσσονα, δεσπόζουσα V7."},
+  blues:{name:"🎷 Μπλουζ (12-bar)", bpm:88, meter:4, feel:"blues", mode:"major", blues:true,
+    verse:["I7","I7","I7","I7","IV7","IV7","I7","I7","V7","IV7","I7","V7"], chorus:null, strum:"Shuffle 12-bar, όλες δεσπόζουσες 7ες."},
+  reggae:{name:"🌴 Ρέγκε", bpm:78, meter:4, feel:"reggae", mode:"major",
+    verse:["I","V","vi","IV"], chorus:["I","IV","I","V"], strum:"Κοφτές συγχορδίες στα ανάποδα (upbeats) 2 & 4."},
+  jazz:{name:"🎺 Τζαζ", bpm:120, meter:4, feel:"jazz", mode:"major",
+    verse:["ii7","V7","Imaj7","Imaj7"], chorus:["iii7","VI7","ii7","V7"], strum:"Swing comping, ii–V–I με συγχορδίες 7ης."},
+  waltz:{name:"🎩 Βαλς", bpm:150, meter:3, feel:"waltz", mode:"major",
+    verse:["I","V","V","I"], chorus:["I","IV","V","I"], strum:"3/4 «ουμ-πα-πα»: μπάσο στο 1, συγχορδία στα 2-3."},
+  bossa:{name:"🌊 Μπόσα Νόβα", bpm:130, meter:4, feel:"bossa", mode:"major",
+    verse:["Imaj7","ii7","V7","Imaj7"], chorus:["IV7","V7","iii7","vi"], strum:"Απαλό λατινικό, σύγκοπες, συγχορδίες 7ης."},
+  funk:{name:"🕺 Φανκ", bpm:112, meter:4, feel:"funk", mode:"minor",
+    verse:["i7","i7","iv7","i7"], chorus:["i7","IV7","i7","V7"], strum:"16α κοφτές πνιχτές συγχορδίες (wah/mute)."},
+  disco:{name:"🪩 Ντίσκο", bpm:120, meter:4, feel:"funk", mode:"minor",
+    verse:["i7","iv7","V7","i7"], chorus:["i7","VI","VII","i7"], strum:"Four-on-the-floor + φανκ κιθάρα."},
+  country:{name:"🤠 Κάντρι", bpm:120, meter:4, feel:"strum", mode:"major",
+    verse:["I","I","V","V"], chorus:["I","IV","I","V"], strum:"Boom-chick, εναλλαγή μπάσου-συγχορδίας."},
+  metal:{name:"🤘 Μέταλ", bpm:150, meter:4, feel:"rock", mode:"minor",
+    verse:["i","VI","VII","i"], chorus:["i","iv","VII","VI"], strum:"Power chords, palm-mute, γρήγορα."},
+  tango:{name:"💃 Τανγκό", bpm:112, meter:4, feel:"strum", mode:"minor",
+    verse:["i","i","V7","i"], chorus:["iv","i","V7","i"], strum:"Έντονο, σταθερό, δραματικό σταμάτημα."},
+  rebetiko:{name:"🇬🇷 Ρεμπέτικο", bpm:100, meter:4, feel:"arpeggio", mode:"minor",
+    verse:["i","V7","i","V7"], chorus:["iv","i","V7","i"], strum:"Μπουζουκίστικο ταξίμι/τσιφτετέλι σε ελάσσονα."}
+};
+const SW_KEYS = [ ["C",0,"major"],["G",7,"major"],["D",2,"major"],["A",9,"major"],["E",4,"major"],
+  ["Am",9,"minor"],["Em",4,"minor"],["Dm",2,"minor"],["Bm",11,"minor"] ];
+
+let swState={mode:"auto", lastSeq:null, lastBpm:90, lastFeel:"strum", lastInst:"guitar"};
+
+function swInit(){
+  const st=document.getElementById("swStyle");
+  st.innerHTML=Object.keys(SW_STYLES).map(k=>`<option value="${k}">${SW_STYLES[k].name}</option>`).join("");
+  const kk=document.getElementById("swKey");
+  kk.innerHTML=SW_KEYS.map((k,i)=>`<option value="${i}">${k[0]} ${k[2]==="minor"?"(ελάσσονα)":"(μείζονα)"}</option>`).join("");
+  document.querySelectorAll("[data-swmode]").forEach(c=>c.addEventListener("click",()=>{
+    document.querySelectorAll("[data-swmode]").forEach(x=>x.classList.remove("active")); c.classList.add("active");
+    swState.mode=c.dataset.swmode;
+    document.getElementById("swAuto").style.display=swState.mode==="auto"?"block":"none";
+    document.getElementById("swCustom").style.display=swState.mode==="custom"?"block":"none";
+    document.getElementById("swSaved").style.display=swState.mode==="saved"?"block":"none";
+    document.getElementById("swOutput").innerHTML=""; stopSong();
+    if(swState.mode==="saved") renderSavedSongs();
+  }));
+  document.getElementById("swGen").addEventListener("click",generateSong);
+  document.getElementById("swRender").addEventListener("click",renderCustomSong);
+  document.getElementById("swSave").addEventListener("click",saveCustomSong);
+  document.getElementById("swTrDown").addEventListener("click",()=>{ const t=document.getElementById("swCustomText"); t.value=transposeText(t.value,-1); renderCustomSong(); });
+  document.getElementById("swTrUp").addEventListener("click",()=>{ const t=document.getElementById("swCustomText"); t.value=transposeText(t.value,1); renderCustomSong(); });
+}
+
+/* --- AUTO generation --- */
+function generateSong(){
+  const raw=document.getElementById("swLyrics").value.trim();
+  if(!raw){ document.getElementById("swOutput").innerHTML=`<div class="note">Γράψε πρώτα μερικούς στίχους παραπάνω.</div>`; return; }
+  const styleKey=document.getElementById("swStyle").value;
+  const style=SW_STYLES[styleKey];
+  const keyInfo=SW_KEYS[+document.getElementById("swKey").value];
+  const inst=document.getElementById("swInst").value;
+  const keyPc=keyInfo[1], mode=keyInfo[2]!=="minor"&&style.mode==="minor"?"minor":(keyInfo[2]||style.mode);
+  const usedMode = style.mode; // style dictates major/minor feel; key root from selection
+  // split into stanzas by blank line
+  const stanzas = raw.split(/\n\s*\n/).map(s=>s.split("\n").map(l=>l.trim()).filter(Boolean)).filter(a=>a.length);
+  let tokCounter=0; const seq=[]; let chartHTML="";
+  const beatsPerChord = style.meter;
+  stanzas.forEach((lines,si)=>{
+    const isChorus = style.chorus && si%2===1;
+    const prog = (isChorus?style.chorus:style.verse).map(r=>romanToChord(r,keyPc,usedMode));
+    chartHTML += `<div class="song-sec"><div class="song-label">${isChorus?"🎵 Ρεφρέν":"📝 Στροφή "+(Math.floor(si/(style.chorus?2:1))+1)}</div>`;
+    let ci=0;
+    lines.forEach(line=>{
+      // 1 chord at start of line, plus a 2nd mid-line if line is long
+      const chordsThisLine = line.length>28 ? 2 : 1;
+      let lineHTML="", parts;
+      if(chordsThisLine===2){ const mid=Math.floor(line.length/2); const sp=line.indexOf(" ",mid); const cut=sp>0?sp:mid; parts=[line.slice(0,cut), line.slice(cut).trim()]; }
+      else parts=[line];
+      parts.forEach(seg=>{
+        const chord=prog[ci%prog.length]; ci++;
+        const tokId="tok"+(tokCounter++);
+        seq.push({name:chord, beats:beatsPerChord, tokId});
+        lineHTML += `<span class="chordtok" id="${tokId}">${chord}</span><span class="lyrseg">${escapeHtml(seg)} </span>`;
+      });
+      chartHTML += `<div class="song-line">${lineHTML}</div>`;
+    });
+    chartHTML += `</div>`;
+  });
+  swState.lastSeq=seq; swState.lastBpm=style.bpm; swState.lastFeel=style.feel; swState.lastInst=inst;
+  const chordSet=[...new Set(seq.map(s=>s.name))];
+  document.getElementById("swOutput").innerHTML = `
+    <div class="card"><h2><span class="i">🎼</span> Το τραγούδι σου — ${style.name}</h2><div class="body">
+      <div class="kv">
+        <b>Τονικότητα:</b><span>${keyInfo[0]} ${usedMode==="minor"?"(ελάσσονα)":"(μείζονα)"}</span>
+        <b>Ταχύτητα:</b><span>${style.bpm} BPM · ${style.meter}/4</span>
+        <b>Ρυθμός:</b><span>${style.strum}</span>
+        <b>Συγχορδίες:</b><span>${chordSet.join(" · ")}</span>
+      </div>
+      <div class="btnrow">
+        <button class="gold" id="swPlayBtn">▶ Παίξε το τραγούδι</button>
+        <button class="gold sm" id="swMelody">🎶 Πρότεινε μελωδία</button>
+        <button class="ghost sm" id="swToCustom">✍️ Άνοιξέ το για επεξεργασία</button>
+        <button class="ghost sm" id="swPrintBtn">🖨️ Εκτύπωση / PDF</button>
+      </div>
+      <div class="songchart">${chartHTML}</div>
+      <div class="tip">Πάτα ▶ και ακολούθησε τις συγχορδίες που φωτίζονται. Οι συγχορδίες φαίνονται με διάγραμμα στην καρτέλα «🎸 Κιθάρα» ή «🎼 Συγχορδίες».</div>
+    </div></div>`;
+  document.getElementById("swPlayBtn").onclick=()=>{ if(!Audio.ready)enableAudio(); if(document.getElementById("swPlayBtn").textContent[0]==="⏸"){stopSong();return;} playSong(seq,style.bpm,style.feel,inst); };
+  document.getElementById("swToCustom").onclick=()=>exportToCustom(seq, keyInfo[0], style, raw);
+  document.getElementById("swPrintBtn").onclick=printSong;
+  document.getElementById("swMelody").onclick=()=>suggestMelodyInto(document.getElementById("swOutput"), seq, keyInfo[1], usedMode, style.bpm);
+}
+function escapeHtml(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+/* build ChordPro text from generated seq + open in custom editor */
+function exportToCustom(seq, key, style, lyricsRaw){
+  // reconstruct [chord]lyric — approximate: put chord before each line/segment
+  const lines=lyricsRaw.split("\n");
+  let out="", si=0;
+  lines.forEach(l=>{
+    if(!l.trim()){ out+="\n"; return; }
+    // consume chords used for this line (1 or 2)
+    const two=l.trim().length>28;
+    const c1=seq[si]?seq[si].name:""; si++;
+    if(two){ const c2=seq[si]?seq[si].name:""; si++; const mid=Math.floor(l.length/2); const sp=l.indexOf(" ",mid); const cut=sp>0?sp:mid;
+      out+=`[${c1}]${l.slice(0,cut)}[${c2}]${l.slice(cut)}\n`; }
+    else out+=`[${c1}]${l}\n`;
+  });
+  document.getElementById("swCustomText").value=out.trim();
+  document.getElementById("swBpm").value=style.bpm;
+  document.getElementById("swFeel").value=style.feel==="blues"?"strum":style.feel;
+  document.querySelector('[data-swmode="custom"]').click();
+  renderCustomSong();
+}
+
+/* --- CUSTOM (ChordPro-lite) --- */
+function parseChordPro(text){
+  // returns {lines:[{tokens:[{chord,lyric}]}], seq:[{name,beats,tokId}]}
+  const lines=text.split("\n"); const out=[]; const seq=[]; let tokCounter=0;
+  lines.forEach(line=>{
+    if(!line.trim()){ out.push(null); return; } // blank => spacer
+    const tokens=[]; const re=/\[([^\]]+)\]/g; let last=0, m, pending=null;
+    // text before first chord
+    let idx=0; let parts=[]; let cursor=0;
+    // split keeping chords
+    const segs=[]; let mm; let li=0;
+    const regex=/\[([^\]]+)\]/g; let prev=0;
+    let firstLyric="";
+    let result=[]; let pos=0; let match;
+    let lastChord=null;
+    while((match=regex.exec(line))!==null){
+      const lyricBefore=line.slice(pos, match.index);
+      if(result.length===0 && lyricBefore){ result.push({chord:null, lyric:lyricBefore}); }
+      else if(lyricBefore && result.length){ result[result.length-1].lyric += lyricBefore; }
+      result.push({chord:match[1], lyric:""});
+      pos=regex.lastIndex;
+    }
+    const tail=line.slice(pos);
+    if(result.length){ result[result.length-1].lyric += tail; }
+    else result.push({chord:null, lyric:line});
+    // build tokens + seq
+    result.forEach(r=>{
+      let tokId=null;
+      if(r.chord){ tokId="ctok"+(tokCounter++); seq.push({name:r.chord, beats:2, tokId}); }
+      tokens.push({chord:r.chord, lyric:r.lyric, tokId});
+    });
+    out.push({tokens});
+  });
+  return {lines:out, seq};
+}
+function renderCustomSong(){
+  const text=document.getElementById("swCustomText").value;
+  if(!text.trim()){ document.getElementById("swOutput").innerHTML=`<div class="note">Γράψε στίχους με συγχορδίες σε αγκύλες, π.χ. <code class="k">[C]Γεια σου [G]κόσμε</code>.</div>`; return; }
+  const bpm=+document.getElementById("swBpm").value||90;
+  const feel=document.getElementById("swFeel").value;
+  const inst=document.getElementById("swInst2").value;
+  const {lines,seq}=parseChordPro(text);
+  let html="";
+  lines.forEach(l=>{
+    if(l===null){ html+=`<div style="height:12px"></div>`; return; }
+    let lh="";
+    l.tokens.forEach(t=>{
+      lh += (t.chord?`<span class="chordtok" ${t.tokId?`id="${t.tokId}"`:""}>${escapeHtml(t.chord)}</span>`:"") + `<span class="lyrseg">${escapeHtml(t.lyric)}</span>`;
+    });
+    html+=`<div class="song-line">${lh}</div>`;
+  });
+  const chordSet=[...new Set(seq.map(s=>s.name))];
+  swState.lastSeq=seq; swState.lastBpm=bpm; swState.lastFeel=feel; swState.lastInst=inst;
+  document.getElementById("swOutput").innerHTML=`
+    <div class="card"><h2><span class="i">🎼</span> ${escapeHtml(document.getElementById("swTitle").value||"Η σύνθεσή μου")}</h2><div class="body">
+      <div class="kv"><b>Ταχύτητα:</b><span>${bpm} BPM</span><b>Ρυθμός:</b><span>${feel}</span><b>Συγχορδίες:</b><span>${chordSet.join(" · ")||"—"}</span></div>
+      <div class="btnrow"><button class="gold" id="swPlayBtn">▶ Παίξε το τραγούδι</button>
+        <button class="gold sm" id="swMelodyC">🎶 Πρότεινε μελωδία</button>
+        <button class="ghost sm" id="swPrintBtn">🖨️ Εκτύπωση / PDF</button></div>
+      <div class="songchart">${html}</div>
+    </div></div>`;
+  document.getElementById("swPlayBtn").onclick=()=>{ if(!Audio.ready)enableAudio(); if(document.getElementById("swPlayBtn").textContent[0]==="⏸"){stopSong();return;} playSong(seq,bpm,feel,inst); };
+  document.getElementById("swPrintBtn").onclick=printSong;
+  document.getElementById("swMelodyC").onclick=()=>{ const objs=seq.map(s=>parseChordName(s.name)).filter(Boolean); const k=objs.length?guessKey(objs):{keyPc:0,mode:"major"}; suggestMelodyInto(document.getElementById("swOutput"), seq, k.keyPc, k.mode, bpm); };
+}
+function saveCustomSong(){
+  const text=document.getElementById("swCustomText").value.trim();
+  if(!text){ alert("Δεν υπάρχει κείμενο για αποθήκευση."); return; }
+  const title=document.getElementById("swTitle").value.trim()||("Σύνθεση "+(Store.data.songs.length+1));
+  Store.data.songs.push({ title, text, bpm:+document.getElementById("swBpm").value||90,
+    feel:document.getElementById("swFeel").value, inst:document.getElementById("swInst2").value, ts:Date.now() });
+  Store.save();
+  document.getElementById("swOutput").insertAdjacentHTML("afterbegin",`<div class="tip">💾 Αποθηκεύτηκε «${escapeHtml(title)}». Δες το στο «Οι συνθέσεις μου».</div>`);
+}
+function renderSavedSongs(){
+  const list=document.getElementById("swSavedList");
+  if(!Store.data.songs.length){ list.innerHTML=`<div class="note">Δεν έχεις αποθηκεύσει ακόμη καμία σύνθεση. Πήγαινε στο «✍️ Γράψε το δικό σου».</div>`; return; }
+  list.innerHTML=Store.data.songs.map((s,i)=>`<div class="lrow" data-si="${i}">
+    <div class="num">🎵</div><div class="meta"><b>${escapeHtml(s.title)}</b><span>${s.bpm} BPM · ${s.feel} · ${new Date(s.ts).toLocaleDateString("el-GR")}</span></div>
+    <button class="ghost sm" data-load="${i}">Άνοιγμα</button>
+    <button class="ghost sm" data-del="${i}" style="color:var(--red2)">✕</button></div>`).join("");
+  list.querySelectorAll("[data-load]").forEach(b=>b.addEventListener("click",e=>{ e.stopPropagation(); const s=Store.data.songs[+b.dataset.load];
+    document.getElementById("swCustomText").value=s.text; document.getElementById("swTitle").value=s.title;
+    document.getElementById("swBpm").value=s.bpm; document.getElementById("swFeel").value=s.feel; document.getElementById("swInst2").value=s.inst;
+    document.querySelector('[data-swmode="custom"]').click(); renderCustomSong(); }));
+  list.querySelectorAll("[data-del]").forEach(b=>b.addEventListener("click",e=>{ e.stopPropagation();
+    if(confirm("Διαγραφή σύνθεσης;")){ Store.data.songs.splice(+b.dataset.del,1); Store.save(); renderSavedSongs(); } }));
+}
+
+/* =========================================================================
+   RECORDER — καταγραφή & αναπαραγωγή μελωδίας (πιάνο & κιθάρα)
+   ========================================================================= */
+const Recorder = {
+  recording:false, startT:0, events:[], pending:{},
+  start(){ this.recording=true; this.startT=performance.now(); this.events=[]; this.pending={}; },
+  noteStart(midi,inst){ if(!this.recording) return; this.pending[inst+"_"+midi]={midi,inst,t:(performance.now()-this.startT)/1000}; },
+  noteEnd(midi,inst){ if(!this.recording) return; const k=inst+"_"+midi,p=this.pending[k];
+    if(p){ p.dur=Math.max(0.18,(performance.now()-this.startT)/1000 - p.t); this.events.push(p); delete this.pending[k]; } },
+  oneShot(midi,inst){ if(!this.recording) return; this.events.push({midi,inst,t:(performance.now()-this.startT)/1000,dur:1.2}); },
+  stop(){ this.recording=false; Object.values(this.pending).forEach(p=>{p.dur=1.0;this.events.push(p);}); this.pending={};
+    this.events.sort((a,b)=>a.t-b.t); return this.events.slice(); }
+};
+let recBuffers = { piano:[], guitar:[] }; // last captured take per instrument (unsaved)
+let recPlayTimers=[], recPlayToken=0;
+function stopRecPlayback(){ recPlayToken++; recPlayTimers.forEach(t=>clearTimeout(t)); recPlayTimers=[]; }
+function playRecording(events, onDone){
+  stopRecPlayback(); const myTok=++recPlayToken; if(!Audio.ready) enableAudio();
+  let last=0;
+  events.forEach(e=>{ last=Math.max(last,e.t+e.dur);
+    recPlayTimers.push(setTimeout(()=>{ if(myTok!==recPlayToken) return;
+      Audio.play(e.midi, e.inst, e.dur, 0.85);
+      if(e.inst==="piano"){ const el=document.querySelector(`#pianoEl [data-m="${e.midi}"]`); if(el){ el.classList.add("dn"); setTimeout(()=>el.classList.remove("dn"), Math.min(400,e.dur*1000)); } }
+    }, e.t*1000)); });
+  recPlayTimers.push(setTimeout(()=>{ if(myTok===recPlayToken && onDone) onDone(); }, last*1000+300));
+}
+function renderRecorder(elId, inst){
+  const el=document.getElementById(elId); if(!el) return;
+  const saved=Store.data.recordings.filter(r=>r.inst===inst);
+  const hasTake=recBuffers[inst] && recBuffers[inst].length;
+  el.innerHTML=`
+    <div class="rr">
+      <span class="rec-dot" id="dot_${inst}"></span>
+      <b style="font-size:13px">🔴 Ρεκόρντερ ${inst==="piano"?"πιάνου":"κιθάρας"}</b>
+      <span class="spacer" style="flex:1"></span>
+      <button class="sm" id="recStart_${inst}">● Εγγραφή</button>
+      <button class="ghost sm" id="recStop_${inst}" disabled>■ Στοπ</button>
+      <button class="ghost sm" id="recPlay_${inst}" ${hasTake?"":"disabled"}>▶ Ακρόαση</button>
+      <button class="gold sm" id="recSave_${inst}" ${hasTake?"":"disabled"}>💾 Αποθήκευση</button>
+      <button class="ghost sm" id="recWav_${inst}" ${hasTake?"":"disabled"}>⬇️ WAV</button>
+    </div>
+    <div class="rec-status" id="recStatus_${inst}" style="margin-top:8px">${hasTake?`Έτοιμη λήψη: ${recBuffers[inst].length} νότες. Πάτα ▶ ή 💾.`:"Πάτα «Εγγραφή» και παίξε. Η καταγραφή κρατά νότες & ρυθμό."}</div>
+    <div class="rec-list" id="recList_${inst}">${saved.map((r)=>{
+        const gi=Store.data.recordings.indexOf(r);
+        return `<div class="rec-item"><span class="rn">🎵 ${escapeHtml(r.name)} <span style="color:var(--muted)">(${r.events.length} νότες)</span></span>
+        <button class="ghost sm" data-rplay="${gi}">▶</button>
+        <button class="ghost sm" data-rwav="${gi}">⬇️</button>
+        <button class="ghost sm" data-rdel="${gi}" style="color:var(--red2)">✕</button></div>`;
+      }).join("")}</div>`;
+  const dot=document.getElementById("dot_"+inst), status=document.getElementById("recStatus_"+inst);
+  document.getElementById("recStart_"+inst).onclick=()=>{ if(!Audio.ready)enableAudio(); Recorder.start(); dot.classList.add("live");
+    document.getElementById("recStart_"+inst).disabled=true; document.getElementById("recStop_"+inst).disabled=false;
+    status.textContent="● Εγγραφή σε εξέλιξη… παίξε τώρα!"; };
+  document.getElementById("recStop_"+inst).onclick=()=>{ const ev=Recorder.stop(); dot.classList.remove("live");
+    recBuffers[inst]=ev.filter(e=>e.inst===inst); renderRecorder(elId,inst); };
+  document.getElementById("recPlay_"+inst).onclick=()=>{ if(hasTake) playRecording(recBuffers[inst]); };
+  document.getElementById("recSave_"+inst).onclick=()=>{ if(!hasTake) return;
+    const name=prompt("Όνομα ηχογράφησης:", (inst==="piano"?"Μελωδία πιάνου ":"Ριφ κιθάρας ")+(saved.length+1)); if(name===null) return;
+    Store.data.recordings.push({name:name||"Χωρίς τίτλο", inst, events:recBuffers[inst], ts:Date.now()}); Store.save(); renderRecorder(elId,inst); };
+  const recWavBtn=document.getElementById("recWav_"+inst); if(recWavBtn) recWavBtn.onclick=(e)=>{ if(hasTake) exportWav(recBuffers[inst], (inst==="piano"?"μελωδια-πιανο":"ριφ-κιθαρα"), e.target); };
+  el.querySelectorAll("[data-rplay]").forEach(b=>b.onclick=()=>playRecording(Store.data.recordings[+b.dataset.rplay].events));
+  el.querySelectorAll("[data-rwav]").forEach(b=>b.onclick=(e)=>{ const r=Store.data.recordings[+b.dataset.rwav]; exportWav(r.events, r.name, e.target); });
+  el.querySelectorAll("[data-rdel]").forEach(b=>b.onclick=()=>{ if(confirm("Διαγραφή ηχογράφησης;")){ Store.data.recordings.splice(+b.dataset.rdel,1); Store.save(); renderRecorder(elId,inst); } });
+}
+
+/* =========================================================================
+   VIDEOS — YouTube λίστα μαθημάτων
+   ========================================================================= */
+function ytId(url){
+  if(!url) return null;
+  const m=url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/|v\/)|v=)([\w-]{11})/);
+  return m?m[1]:(/^[\w-]{11}$/.test(url.trim())?url.trim():null);
+}
+let vidFilter="all";
+function renderVideos(){
+  const list=document.getElementById("vidList");
+  let vids=Store.data.videos; if(vidFilter!=="all") vids=vids.filter(v=>v.cat===vidFilter);
+  if(!vids.length){ list.innerHTML=`<div class="note">Δεν υπάρχουν βίντεο ${vidFilter==="all"?"":"σε αυτή την κατηγορία "}ακόμη. Πρόσθεσε τον πρώτο σου σύνδεσμο παραπάνω!</div>`; return; }
+  const catLabel={piano:"🎹 Πιάνο",guitar:"🎸 Κιθάρα",theory:"📖 Θεωρία",other:"🎵 Άλλο"};
+  list.innerHTML=`<div class="vid-grid">${vids.map(v=>{
+    const gi=Store.data.videos.indexOf(v);
+    return `<div class="vid-card"><div class="vframe"><iframe src="https://www.youtube-nocookie.com/embed/${v.id}" title="${escapeHtml(v.title)}" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+      <div class="vmeta"><span class="vcat">${catLabel[v.cat]||"🎵"}</span><b title="${escapeHtml(v.title)}">${escapeHtml(v.title)}</b>
+      <button class="ghost sm" data-vdel="${gi}" style="color:var(--red2)">✕</button></div></div>`;
+  }).join("")}</div>`;
+  list.querySelectorAll("[data-vdel]").forEach(b=>b.onclick=()=>{ if(confirm("Αφαίρεση βίντεο;")){ Store.data.videos.splice(+b.dataset.vdel,1); Store.save(); renderVideos(); } });
+}
+function initVideos(){
+  document.getElementById("vidAdd").onclick=()=>{
+    const url=document.getElementById("vidUrl").value.trim();
+    const id=ytId(url);
+    if(!id){ alert("Μη έγκυρος σύνδεσμος YouTube. Αντιγράψε τη διεύθυνση του βίντεο (π.χ. https://www.youtube.com/watch?v=...)."); return; }
+    const title=document.getElementById("vidTitle").value.trim()||"Βίντεο μάθημα";
+    const cat=document.getElementById("vidCat").value;
+    Store.data.videos.push({id,title,cat,ts:Date.now()}); Store.save();
+    document.getElementById("vidUrl").value=""; document.getElementById("vidTitle").value="";
+    renderVideos();
+  };
+  document.querySelectorAll("[data-vfilter]").forEach(c=>c.onclick=()=>{
+    document.querySelectorAll("[data-vfilter]").forEach(x=>x.classList.remove("active")); c.classList.add("active");
+    vidFilter=c.dataset.vfilter; renderVideos();
+  });
+  renderVideos();
+}
+
+/* =========================================================================
+   ANALYZER — πώς να παίξω ένα τραγούδι σε πιάνο & κιθάρα
+   ========================================================================= */
+function extractChords(text){
+  // ChordPro [X] tokens first
+  const inBr=[...text.matchAll(/\[([A-G][#b]?[^\]\s]*)\]/g)].map(m=>m[1]);
+  if(inBr.length) return inBr;
+  // else split tokens that look like chords
+  return text.split(/[\s,|]+/).filter(t=>/^[A-G][#b]?(m|maj|min|dim|aug|sus|add|M)?\d*(sus\d)?[+°]?$/.test(t));
+}
+const DEG_NAMES=["I","II","III","IV","V","VI","VII"];
+function guessKey(chordObjs){
+  // score each of 24 keys by how many chord roots fit the diatonic set with matching quality
+  let best=null;
+  for(let mode of ["major","minor"]){
+    for(let keyPc=0;keyPc<12;keyPc++){
+      const offs = mode==="major"?[0,2,4,5,7,9,11]:[0,2,3,5,7,8,10];
+      const quals= mode==="major"?["","m","m","","","m","dim"]:["m","dim","","m","m","",""];
+      let score=0;
+      chordObjs.forEach(c=>{
+        const rel=((c.rootPc-keyPc)+12)%12; const di=offs.indexOf(rel);
+        if(di>=0){ score+=1; const q=c.suffix.replace("7","").replace("maj",""); if((q==="m")===(quals[di]==="m")) score+=1; }
+      });
+      // prefer keys where the first/last chord is the tonic
+      if(chordObjs.length){ const firstRel=((chordObjs[0].rootPc-keyPc)+12)%12; if(firstRel===0) score+=1.5;
+        const lastRel=((chordObjs[chordObjs.length-1].rootPc-keyPc)+12)%12; if(lastRel===0) score+=1.5; }
+      if(!best||score>best.score) best={keyPc,mode,score,offs,quals};
+    }
+  }
+  return best;
+}
+const PIANO_FINGERS={3:"1-3-5",4:"1-2-3-5"};
+function computeGuitarShape(chord){
+  // Prefer stored open shape
+  const letter=NOTE_LETTER[chord.rootPc]+chord.suffix;
+  if(GUITAR_CHORDS[letter]) return {frets:GUITAR_CHORDS[letter].frets, name:GUITAR_CHORDS[letter].name, open:true};
+  // Build barre: E-shape (root on 6th string) fret = (rootPc - E)%12 ; A-shape (root on 5th) = (rootPc - A)%12
+  const q = chord.suffix;
+  const fE = ((chord.rootPc-4)+12)%12; // E=4
+  const fA = ((chord.rootPc-9)+12)%12; // A=9
+  function eShape(f){ if(q==="m"||q==="m7"||q==="dim") return [f,f+2,f+2,f,f,f]; if(q==="7") return [f,f+2,f,f+1,f,f]; if(q==="maj7") return [f,f+2,f+1,f+1,f,f]; return [f,f+2,f+2,f+1,f,f]; }
+  function aShape(f){ if(q==="m"||q==="m7") return [-1,f,f+2,f+2,f+1,f]; if(q==="7") return [-1,f,f+2,f,f+2,f]; if(q==="maj7") return [-1,f,f+2,f+1,f+2,f]; return [-1,f,f+2,f+2,f+2,f]; }
+  const cands=[];
+  if(fE>0&&fE<=9) cands.push({frets:eShape(fE), base:fE, name:`${letter} — μπαρέ (σχήμα Ε) στο ${fE}ο τάστο`, string:"Mi"});
+  if(fA>0&&fA<=9) cands.push({frets:aShape(fA), base:fA, name:`${letter} — μπαρέ (σχήμα Α) στο ${fA}ο τάστο`, string:"Λα"});
+  if(!cands.length){ // fallback low
+    const f=fE||12; return {frets:eShape(f), name:`${letter} — μπαρέ (σχήμα Ε) στο ${f}ο τάστο`, barre:f};
+  }
+  cands.sort((a,b)=>a.base-b.base);
+  const c=cands[0]; return {frets:c.frets, name:c.name, barre:c.base};
+}
+function analyzeSong(){
+  const text=document.getElementById("anInput").value;
+  const names=extractChords(text);
+  const out=document.getElementById("anOutput");
+  if(!names.length){ out.innerHTML=`<div class="note">Δεν βρέθηκαν συγχορδίες. Γράψε π.χ. <code class="k">Am F C G</code> ή στίχους με <code class="k">[Am]...</code>.</div>`; return; }
+  const uniqNames=[...new Set(names)];
+  const chordObjs=names.map(parseChordName).filter(Boolean);
+  const uniqObjs=[...new Map(chordObjs.map(c=>[c.rootPc+"|"+c.suffix,c])).values()];
+  const key=guessKey(chordObjs);
+  const keyName=NOTE_LATIN[key.keyPc]+" ("+NOTE_LETTER[key.keyPc]+") "+(key.mode==="minor"?"ελάσσονα":"μείζονα");
+  // difficulty: barre chords => harder
+  let barreCount=0; uniqObjs.forEach(c=>{ const g=computeGuitarShape(c); if(!g.open) barreCount++; });
+  const diff = barreCount===0?"Εύκολο (μόνο ανοιχτές συγχορδίες)":barreCount<=2?"Μεσαίο (λίγα μπαρέ)":"Απαιτητικό (πολλά μπαρέ)";
+  // capo suggestion for guitar if many barre
+  let capoTip="";
+  if(barreCount>=2){ capoTip=`💡 <b>Καπό:</b> Δοκίμασε καπό ώστε να παίξεις τις δύσκολες μπαρέ ως ανοιχτές συγχορδίες σε «οικογένεια» ${key.mode==="minor"?"Am/Em":"C/G/D"}.`; }
+  let cardsHTML="";
+  uniqObjs.forEach(c=>{
+    const notesLatin=c.intervals.map(iv=>NOTE_LATIN[(c.rootPc+iv)%12]);
+    const notesLetter=c.intervals.map(iv=>NOTE_LETTER[(c.rootPc+iv)%12]);
+    const fing=PIANO_FINGERS[c.intervals.length]||"1-2-3-5";
+    const g=computeGuitarShape(c);
+    const rel=((c.rootPc-key.keyPc)+12)%12; const di=key.offs.indexOf(rel);
+    const roman = di>=0 ? (key.quals[di]==="m"?DEG_NAMES[di].toLowerCase():DEG_NAMES[di])+(c.suffix.includes("7")?"7":"") : "—";
+    cardsHTML+=`<div class="card"><h2><span class="i">🎵</span> ${escapeHtml(c.display)} <span style="font-weight:400;color:var(--muted);font-size:13px">· βαθμίδα ${roman}</span></h2><div class="body">
+      <div class="an-chord">
+        <div class="an-box"><h4>🎹 Στο πιάνο</h4>
+          <p style="margin:.2em 0">Νότες: <b>${notesLatin.join(" – ")}</b> <span style="color:var(--muted)">(${notesLetter.join("-")})</span></p>
+          <p style="margin:.2em 0">Δαχτυλισμός δεξιού: <b>${fing}</b> (θέση θεμελίου). Αριστερό: αντεστραμμένα 5-3-1.</p>
+          <button class="gold sm" data-piano="${c.rootPc}_${c.intervals.join('-')}">▶ Άκουσε στο πιάνο</button>
+        </div>
+        <div class="an-box"><h4>🎸 Στην κιθάρα</h4>
+          <p style="margin:.2em 0"><b>${escapeHtml(g.name||"")}</b></p>
+          <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">${guitarDiagramSVG({frets:g.frets, name:g.name})}
+          <button class="gold sm" data-guitar="${g.frets.join(',')}">🎸 Άκουσε</button></div>
+          ${g.barre?`<p style="margin:.4em 0 0;font-size:12.5px;color:#ffe7bd">⚠️ Μπαρέ: ίσιωσε τον δείκτη σε όλες τις χορδές στο ${g.barre}ο τάστο.</p>`:""}
+        </div>
+      </div></div></div>`;
+  });
+  // progression as roman numerals
+  const romanSeq=chordObjs.map(c=>{ const rel=((c.rootPc-key.keyPc)+12)%12; const di=key.offs.indexOf(rel);
+    return di>=0?(key.quals[di]==="m"?DEG_NAMES[di].toLowerCase():DEG_NAMES[di]):"?"; });
+  out.innerHTML=`
+    <div class="card"><h2><span class="i">🧭</span> Σύνοψη</h2><div class="body">
+      <div class="kv">
+        <b>Συγχορδίες:</b><span>${uniqNames.map(n=>`<span class="an-chip" data-play="${n}">${escapeHtml(n)}</span>`).join("")}</span>
+        <b>Πιθανή τονικότητα:</b><span>${keyName}</span>
+        <b>Ακολουθία (βαθμίδες):</b><span>${romanSeq.join(" – ")}</span>
+        <b>Δυσκολία κιθάρας:</b><span>${diff}</span>
+      </div>
+      ${capoTip?`<div class="tip">${capoTip}</div>`:""}
+      <div class="btnrow"><button class="gold" id="anPlayAll">▶ Παίξε όλη την ακολουθία (κιθάρα)</button>
+      <button class="ghost sm" id="anPlayPiano">🎹 Παίξε στο πιάνο</button>
+      <button class="gold sm" id="anMelody">🎶 Πρότεινε μελωδία</button>
+      <button class="ghost sm" id="anTrDown">♭ −½</button>
+      <button class="ghost sm" id="anTrUp">♯ +½</button></div>
+      <div class="tip"><b>Πώς να το δουλέψεις:</b> 1) Μάθε κάθε συγχορδία ξεχωριστά (κάρτες παρακάτω). 2) Άσκησε τις <b>αλλαγές</b> αργά με μετρονόμο. 3) Πρόσθεσε ρυθμό/πενιές. 4) Τραγούδα από πάνω.</div>
+    </div></div>
+    ${cardsHTML}`;
+  // wire buttons
+  const seq=chordObjs.map(c=>({name:c.display, beats:4}));
+  document.getElementById("anPlayAll").onclick=()=>{ if(!Audio.ready)enableAudio(); playSong(seq,90,"strum","guitar"); };
+  document.getElementById("anPlayPiano").onclick=()=>{ if(!Audio.ready)enableAudio(); playSong(seq,90,"arpeggio","piano"); };
+  document.getElementById("anMelody").onclick=()=>suggestMelodyInto(out, seq, key.keyPc, key.mode, 100);
+  document.getElementById("anTrDown").onclick=()=>{ document.getElementById("anInput").value=transposeText(text,-1); analyzeSong(); };
+  document.getElementById("anTrUp").onclick=()=>{ document.getElementById("anInput").value=transposeText(text,1); analyzeSong(); };
+  out.querySelectorAll("[data-play]").forEach(ch=>ch.onclick=()=>{ if(!Audio.ready)enableAudio(); const mi=chordToMidis(ch.dataset.play).midis; mi.forEach((m,i)=>setTimeout(()=>Audio.playGuitar(m,1.6,0.8),i*45)); });
+  out.querySelectorAll("[data-piano]").forEach(b=>b.onclick=()=>{ if(!Audio.ready)enableAudio(); const [r,ivs]=b.dataset.piano.split("_"); ivs.split("-").forEach(iv=>Audio.playPiano(60+ +r+ +iv,1.6,0.8)); });
+  out.querySelectorAll("[data-guitar]").forEach(b=>b.onclick=()=>{ if(!Audio.ready)enableAudio(); const frets=b.dataset.guitar.split(",").map(Number); strumChord({frets}); });
+}
+function initAnalyze(){
+  document.getElementById("anBtn").onclick=analyzeSong;
+  document.querySelectorAll("[data-anex]").forEach(b=>b.onclick=()=>{ document.getElementById("anInput").value=b.dataset.anex; analyzeSong(); });
+}
+
+/* =========================================================================
+   WAV EXPORT — offline render των events (πιάνο/κιθάρα) σε αρχείο .wav
+   ========================================================================= */
+function ksBufferOffline(oc, freq, dur){
+  const sr=oc.sampleRate, N=Math.max(2,Math.floor(sr/freq)), len=Math.floor(sr*dur);
+  const buf=oc.createBuffer(1,len,sr), d=buf.getChannelData(0);
+  const ring=new Float32Array(N); for(let i=0;i<N;i++) ring[i]=Math.random()*2-1;
+  const damp=0.996; let idx=0;
+  for(let i=0;i<len;i++){ const cur=ring[idx], nxt=ring[(idx+1)%N]; d[i]=cur; ring[idx]=(cur+nxt)*0.5*damp; idx=(idx+1)%N; }
+  for(let i=0;i<len;i++) d[i]*=Math.pow(1-i/len,0.6);
+  return buf;
+}
+function renderEventsToWav(events, cb){
+  if(!events||!events.length){ alert("Δεν υπάρχουν νότες για εξαγωγή."); return; }
+  const sr=44100, dur=Math.max(...events.map(e=>e.t+e.dur))+0.7;
+  const OC=window.OfflineAudioContext||window.webkitOfflineAudioContext;
+  const oc=new OC(1, Math.ceil(sr*dur), sr);
+  const master=oc.createGain(); master.gain.value=0.85; master.connect(oc.destination);
+  events.forEach(e=>{
+    const when=e.t;
+    if(e.inst==="guitar"){
+      const src=oc.createBufferSource(); src.buffer=ksBufferOffline(oc, mtof(e.midi), Math.max(e.dur,1.2));
+      const g=oc.createGain(); g.gain.value=0.55; const lp=oc.createBiquadFilter(); lp.type="lowpass"; lp.frequency.value=3800;
+      src.connect(lp); lp.connect(g); g.connect(master); src.start(when);
+    } else {
+      const f=mtof(e.midi), out=oc.createGain(); out.connect(master);
+      const peak=0.22, relStart=when+Math.max(0.3,e.dur);
+      out.gain.setValueAtTime(0.0001,when);
+      out.gain.linearRampToValueAtTime(peak,when+0.008);
+      out.gain.exponentialRampToValueAtTime(peak*0.6,when+0.25);
+      out.gain.setValueAtTime(peak*0.6,relStart);
+      out.gain.exponentialRampToValueAtTime(0.0001,relStart+0.35);
+      [[1,1.0],[2,0.45],[3,0.22],[4,0.12],[6,0.06]].forEach(([mult,amp])=>{
+        const o=oc.createOscillator(); o.type=mult===1?"triangle":"sine"; o.frequency.value=f*mult;
+        const g=oc.createGain(); g.gain.value=amp; o.connect(g); g.connect(out); o.start(when); o.stop(relStart+0.4);
+      });
+    }
+  });
+  oc.startRendering().then(cb).catch(err=>alert("Σφάλμα εξαγωγής: "+err));
+}
+function encodeWav(audioBuffer){
+  const ch=audioBuffer.getChannelData(0), len=ch.length, sr=audioBuffer.sampleRate;
+  const buf=new ArrayBuffer(44+len*2), v=new DataView(buf);
+  const ws=(o,s)=>{ for(let i=0;i<s.length;i++) v.setUint8(o+i,s.charCodeAt(i)); };
+  ws(0,"RIFF"); v.setUint32(4,36+len*2,true); ws(8,"WAVE"); ws(12,"fmt ");
+  v.setUint32(16,16,true); v.setUint16(20,1,true); v.setUint16(22,1,true);
+  v.setUint32(24,sr,true); v.setUint32(28,sr*2,true); v.setUint16(32,2,true); v.setUint16(34,16,true);
+  ws(36,"data"); v.setUint32(40,len*2,true);
+  let o=44; for(let i=0;i<len;i++){ let s=Math.max(-1,Math.min(1,ch[i])); v.setInt16(o,s<0?s*0x8000:s*0x7FFF,true); o+=2; }
+  return new Blob([buf],{type:"audio/wav"});
+}
+function downloadBlob(blob, filename){
+  const a=document.createElement("a"), url=URL.createObjectURL(blob);
+  a.href=url; a.download=filename; document.body.appendChild(a); a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); },500);
+}
+function exportWav(events, name, btn){
+  if(btn){ btn.disabled=true; btn.dataset.txt=btn.textContent; btn.textContent="⏳ Εξαγωγή…"; }
+  renderEventsToWav(events, buf=>{ downloadBlob(encodeWav(buf), (name||"ηχογράφηση").replace(/[^\wα-ωΑ-Ω0-9 _-]/gi,"")+".wav");
+    if(btn){ btn.disabled=false; btn.textContent=btn.dataset.txt; } });
+}
+
+/* =========================================================================
+   TRANSPOSE — μεταφορά τονικότητας
+   ========================================================================= */
+function transposeChordName(name, semis){
+  const c=parseChordName(name); if(!c) return name;
+  return NOTE_LETTER[(((c.rootPc+semis)%12)+12)%12]+c.suffix;
+}
+function transposeText(text, semis){
+  if(/\[[^\]]+\]/.test(text)) return text.replace(/\[([A-G][#b]?[^\]]*)\]/g,(m,ch)=>"["+transposeChordName(ch,semis)+"]");
+  return text.replace(/[A-G][#b]?(?:m|maj|min|dim|aug|sus|add|M)?\d*[+°]?/g, tok=> parseChordName(tok)?transposeChordName(tok,semis):tok);
+}
+
+/* =========================================================================
+   AUTO MELODY — πρόταση μελωδίας πάνω στις συγχορδίες
+   ========================================================================= */
+function nearestMidi(pc, ref, lo, hi){
+  lo=lo||67; hi=hi||86; let best=null;
+  for(let m=lo;m<=hi;m++){ if((((m%12)+12)%12)===(((pc%12)+12)%12)){ if(best===null||Math.abs(m-ref)<Math.abs(best-ref)) best=m; } }
+  return best;
+}
+function generateMelody(seq, keyPc, mode, bpm, inst){
+  const scale=(mode==="minor"?[0,2,3,5,7,8,10]:[0,2,4,5,7,9,11]).map(iv=>(keyPc+iv)%12);
+  const beatDur=60/bpm; const events=[]; let t=0; let prev=nearestMidi(keyPc,74,67,84);
+  seq.forEach(ch=>{
+    const c=parseChordName(ch.name)||{rootPc:keyPc,intervals:[0,4,7]};
+    const chordPcs=c.intervals.map(iv=>(c.rootPc+iv)%12);
+    const beats=ch.beats;
+    for(let b=0;b<beats;b++){
+      const strong=(b===0||b===Math.floor(beats/2));
+      const pool=strong?chordPcs:scale;
+      let cand=pool.map(pc=>nearestMidi(pc,prev)).filter(Boolean).sort((a,b)=>Math.abs(a-prev)-Math.abs(b-prev));
+      let midi=cand[Math.floor(Math.random()*Math.min(3,cand.length))]||prev;
+      if(!strong && Math.random()<0.4){
+        events.push({midi,t:t+b*beatDur,dur:beatDur*0.5,inst});
+        const pass=scale.map(pc=>nearestMidi(pc,midi)).filter(m=>Math.abs(m-midi)<=2&&m!==midi);
+        const pm=pass.length?pass[Math.floor(Math.random()*pass.length)]:midi;
+        events.push({midi:pm,t:t+b*beatDur+beatDur*0.5,dur:beatDur*0.5,inst}); prev=pm;
+      } else { events.push({midi,t:t+b*beatDur,dur:beatDur*0.9,inst}); prev=midi; }
+    }
+    t+=beats*beatDur;
+  });
+  events.push({midi:nearestMidi(keyPc,prev),t,dur:beatDur*2,inst}); // κατάληξη στον θεμέλιο
+  return events;
+}
+let lastMelody=null, lastMelodyChords=null;
+function suggestMelodyInto(hostEl, seq, keyPc, mode, bpm){
+  const box=document.createElement("div"); box.className="card"; box.id="melBoxCard";
+  const old=document.getElementById("melBoxCard"); if(old) old.remove();
+  const inst="piano";
+  lastMelody=generateMelody(seq,keyPc,mode,Math.min(bpm,110),inst); lastMelodyChords={seq,bpm:Math.min(bpm,110)};
+  const names=lastMelody.map(e=>NOTE_LATIN[e.midi%12]).join(" ");
+  box.innerHTML=`<h2><span class="i">🎶</span> Προτεινόμενη μελωδία (σόλο)</h2><div class="body">
+    <p class="lead">Αυτόματη μελωδία πάνω στις συγχορδίες, στην τονικότητα ${NOTE_LATIN[keyPc]} ${mode==="minor"?"ελάσσονα":"μείζονα"}. Κάθε φορά προτείνεται κάτι διαφορετικό.</p>
+    <div class="tip" style="font-family:'Consolas',monospace;line-height:2">${names}</div>
+    <div class="btnrow">
+      <button class="gold" id="melPlay">▶ Άκουσε τη μελωδία</button>
+      <button class="ghost sm" id="melPlayChords">🎼 Μελωδία + συγχορδίες</button>
+      <button class="ghost sm" id="melNew">🔀 Άλλη πρόταση</button>
+      <button class="ghost sm" id="melWav">⬇️ Εξαγωγή WAV</button>
+      <button class="ghost sm" id="melSave">💾 Αποθήκευση στις ηχογραφήσεις</button>
+    </div></div>`;
+  hostEl.appendChild(box);
+  document.getElementById("melPlay").onclick=()=>{ if(!Audio.ready)enableAudio(); playRecording(lastMelody); };
+  document.getElementById("melPlayChords").onclick=()=>{ if(!Audio.ready)enableAudio(); playSong(seq,lastMelodyChords.bpm,"arpeggio","guitar"); playRecording(lastMelody); };
+  document.getElementById("melNew").onclick=()=>suggestMelodyInto(hostEl,seq,keyPc,mode,bpm);
+  document.getElementById("melWav").onclick=(e)=>exportWav(lastMelody,"μελωδια",e.target);
+  document.getElementById("melSave").onclick=()=>{ Store.data.recordings.push({name:"Μελωδία "+NOTE_LATIN[keyPc]+" "+(Store.data.recordings.length+1),inst:"piano",events:lastMelody,ts:Date.now()}); Store.save(); alert("💾 Αποθηκεύτηκε στις ηχογραφήσεις πιάνου."); };
+  box.scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+
+/* =========================================================================
+   PWA — εικονίδιο (canvas), manifest inline, fullscreen, service worker
+   ========================================================================= */
+function roundRectPath(x,X,Y,W,H,R){ x.beginPath(); x.moveTo(X+R,Y); x.arcTo(X+W,Y,X+W,Y+H,R); x.arcTo(X+W,Y+H,X,Y+H,R); x.arcTo(X,Y+H,X,Y,R); x.arcTo(X,Y,X+W,Y,R); x.closePath(); }
+function makeIcon(size, maskable){
+  const c=document.createElement("canvas"); c.width=c.height=size; const x=c.getContext("2d");
+  const g=x.createLinearGradient(0,0,size,size); g.addColorStop(0,"#ff2b3b"); g.addColorStop(1,"#8f0009");
+  x.fillStyle=g;
+  if(maskable){ x.fillRect(0,0,size,size); } else { roundRectPath(x,0,0,size,size,size*0.22); x.fill(); }
+  // music notes (two beamed eighth notes) in white
+  x.fillStyle="#fff";
+  const s=size;
+  x.fillRect(s*0.34, s*0.30, s*0.045, s*0.42);            // stem 1
+  x.fillRect(s*0.66, s*0.24, s*0.045, s*0.42);            // stem 2
+  x.beginPath(); x.moveTo(s*0.34,s*0.30); x.lineTo(s*0.705,s*0.235); x.lineTo(s*0.705,s*0.315); x.lineTo(s*0.34,s*0.38); x.closePath(); x.fill(); // beam
+  function head(cx,cy){ x.save(); x.translate(cx,cy); x.rotate(-0.35); x.beginPath(); x.ellipse(0,0,s*0.075,s*0.055,0,0,Math.PI*2); x.fill(); x.restore(); }
+  head(s*0.30, s*0.73); head(s*0.625, s*0.67);
+  return c.toDataURL("image/png");
+}
+function setupPWA(){
+  const ml0=document.getElementById("manifestLink");
+  // Χρησιμοποίησε στατικά manifest/icons όταν σερβίρεται (web/ZIP)· φτιάξ' τα στο runtime
+  // όταν είμαστε τοπικό αρχείο ή δεν υπάρχει linked manifest (standalone/artifact).
+  const needRuntime = location.protocol==="file:" || !ml0 || !ml0.getAttribute("href");
+  if(needRuntime) try{
+    const i192=makeIcon(192,true), i512=makeIcon(512,true);
+    const appleI=makeIcon(180,false);
+    const al=document.getElementById("appleIcon"); if(al) al.href=appleI;
+    const manifest={
+      name:"ΜΟΥΣΙΚΗ ΣΧΟΛΗ 360°", short_name:"Μουσική Σχολή",
+      description:"Μάθε πιάνο & κιθάρα σαν επαγγελματίας — offline μουσική σχολή με πραγματικό ήχο, σύνθεση τραγουδιών, ηχογράφηση & ανάλυση.",
+      start_url:".", scope:".", display:"standalone", orientation:"any", lang:"el",
+      background_color:"#0e0f12", theme_color:"#e30613",
+      icons:[ {src:i192,sizes:"192x192",type:"image/png",purpose:"any maskable"},
+              {src:i512,sizes:"512x512",type:"image/png",purpose:"any maskable"} ]
+    };
+    const blob=new Blob([JSON.stringify(manifest)],{type:"application/manifest+json"});
+    const ml=document.getElementById("manifestLink"); if(ml) ml.href=URL.createObjectURL(blob);
+  }catch(e){}
+  // Service worker (μόνο όταν σερβίρεται μέσω http/https — όχι σε file://)
+  if("serviceWorker" in navigator && location.protocol.startsWith("http")){
+    navigator.serviceWorker.register("sw.js").catch(()=>{});
+  }
+}
+function toggleFullscreen(){
+  const el=document.documentElement;
+  const req=el.requestFullscreen||el.webkitRequestFullscreen||el.msRequestFullscreen;
+  const exit=document.exitFullscreen||document.webkitExitFullscreen||document.msExitFullscreen;
+  const isFs=document.fullscreenElement||document.webkitFullscreenElement;
+  if(!isFs){
+    if(req){ try{ req.call(el); }catch(e){} }
+    else { alert("Το iPhone δεν υποστηρίζει πλήρη οθόνη στον browser. Για εμπειρία εφαρμογής: μενού Safari → «Προσθήκη στην αρχική οθόνη» και άνοιξέ το από εκεί."); }
+  } else if(exit){ try{ exit.call(document); }catch(e){} }
+}
+function updateFsLabel(){
+  const b=document.getElementById("fsBtn"); if(!b) return;
+  const isFs=document.fullscreenElement||document.webkitFullscreenElement;
+  b.textContent=isFs?"⛶ Έξοδος":"⛶ Πλήρης οθόνη";
+}
+document.getElementById("fsBtn").addEventListener("click",toggleFullscreen);
+document.addEventListener("fullscreenchange",updateFsLabel);
+document.addEventListener("webkitfullscreenchange",updateFsLabel);
+
+/* --- Install app (web version): εμφανίζεται μόνο όταν είναι εγκαταστάσιμο --- */
+let deferredInstallPrompt=null;
+window.addEventListener("beforeinstallprompt", e=>{
+  e.preventDefault(); deferredInstallPrompt=e;
+  const b=document.getElementById("installBtn"); if(b) b.style.display="";
+});
+document.getElementById("installBtn").addEventListener("click", async ()=>{
+  if(!deferredInstallPrompt){
+    alert("Για εγκατάσταση: Android/PC → μενού browser «Εγκατάσταση εφαρμογής» · iPhone → Κοινή χρήση → «Προσθήκη στην αρχική οθόνη».");
+    return;
+  }
+  deferredInstallPrompt.prompt();
+  try{ await deferredInstallPrompt.userChoice; }catch(e){}
+  deferredInstallPrompt=null;
+  const b=document.getElementById("installBtn"); if(b) b.style.display="none";
+});
+window.addEventListener("appinstalled", ()=>{ const b=document.getElementById("installBtn"); if(b) b.style.display="none"; deferredInstallPrompt=null; });
+
+/* =========================================================================
+   INIT
+   ========================================================================= */
+function init(){
+  setupPWA();
+  renderHome();
+  renderPiano();
+  renderGuitar();
+  renderTheory();
+  renderChordControls(); renderChordView();
+  initScales(); renderScale();
+  renderLessonList();
+  renderQuizModes(); newQuestion(); updateQuizStats();
+  renderBeatDots();
+  swInit();
+  renderRecorder("pianoRec","piano"); renderRecorder("guitarRec","guitar");
+  initVideos(); initAnalyze();
+}
+init();
+</script>
+</body>
+</html>

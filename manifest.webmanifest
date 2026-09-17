@@ -1,0 +1,17 @@
+{
+  "name": "ΜΟΥΣΙΚΗ ΣΧΟΛΗ 360°",
+  "short_name": "Μουσική Σχολή",
+  "description": "Μάθε πιάνο & κιθάρα σαν επαγγελματίας — offline μουσική σχολή με πραγματικό ήχο, σύνθεση τραγουδιών, ηχογράφηση & ανάλυση.",
+  "lang": "el",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0e0f12",
+  "theme_color": "#e30613",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icons/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
+  ]
+}
