@@ -260,6 +260,43 @@
   .an-chip{display:inline-block;background:var(--redsoft);border:1px solid #5a1a1e;color:#ffd7d9;font-weight:800;border-radius:8px;padding:3px 9px;margin:0 4px 6px 0;font-size:13px;cursor:pointer}
   .an-chip:hover{border-color:var(--red)}
   .footer{text-align:center;color:var(--muted);font-size:12px;margin-top:24px}
+
+  /* ============ ΟΡΙΖΟΝΤΙΑ ΠΕΡΙΣΤΡΟΦΗ (landscape) & TABLET (έως ~15") ============ */
+  /* Κινητό/τάμπλετ ξαπλωμένο με μικρό ύψος → συμπαγής κεφαλίδα για να κερδίζουμε ύψος */
+  @media (orientation:landscape) and (max-height:600px){
+    .wrap{padding-top:max(8px,env(safe-area-inset-top));padding-bottom:44px}
+    header.top{padding:8px 14px;gap:10px;margin-bottom:10px}
+    header.top .logo{width:38px;height:38px;font-size:19px;border-radius:10px}
+    header.top h1{font-size:17px}
+    header.top p{font-size:11px;margin-top:0}
+    header.top .copyr{font-size:10.5px;margin-top:1px}
+    .audio-badge{padding:5px 10px;font-size:11px}
+    nav.tabs{margin-bottom:10px;gap:6px}
+    nav.tabs button{padding:7px 11px;font-size:12.5px}
+    .card>h2{padding:11px 16px}
+    .card .body{padding:13px 16px}
+  }
+  /* Ξαπλωμένα κινητά / μικρά τάμπλετ: 2 στήλες νωρίτερα, αξιοποίηση πλάτους */
+  @media (orientation:landscape) and (min-width:680px){
+    .home-grid{grid-template-columns:1fr 1fr}
+    .cols.two{grid-template-columns:1fr 1fr}
+    .an-chord{grid-template-columns:1fr 1fr}
+    .vid-grid{grid-template-columns:1fr 1fr}
+    .quiz-opts{grid-template-columns:repeat(4,1fr)}
+  }
+  /* Tablet portrait (π.χ. 768×1024): 2 στήλες αντί για μία */
+  @media (min-width:760px) and (max-width:899px){
+    .cols.two{grid-template-columns:1fr 1fr}
+    .an-chord{grid-template-columns:1fr 1fr}
+    .vid-grid{grid-template-columns:1fr 1fr}
+  }
+  /* Tablet 1024×768 landscape & άνω (έως 15"): πλήρης πολυστηλη διάταξη */
+  @media (min-width:900px){
+    .home-grid{grid-template-columns:repeat(3,1fr)}
+    .cols.two{grid-template-columns:1fr 1fr}
+    .an-chord{grid-template-columns:1fr 1fr}
+    .vid-grid{grid-template-columns:1fr 1fr}
+  }
   code.k{background:var(--card2);border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:12px;color:var(--gold2)}
 </style>
 </head>
