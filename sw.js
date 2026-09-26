@@ -1,7 +1,7 @@
 /* ΜΟΥΣΙΚΗ ΣΧΟΛΗ 360° — Service Worker (offline cache).
    Ενεργό μόνο όταν η εφαρμογή σερβίρεται μέσω http(s). Ως τοπικό αρχείο (file://)
    η εφαρμογή ήδη λειτουργεί offline και ο SW δεν χρειάζεται. */
-const CACHE = "mousiki360-v2";
+const CACHE = "mousiki360-v3";
 const ASSETS = ["./", "./index.html"];
 
 self.addEventListener("install", e => {

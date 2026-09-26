@@ -335,6 +335,19 @@
   .mnote{display:inline-block;padding:3px 7px;border-radius:7px;background:var(--card2);border:1px solid var(--line);font-size:13px;font-weight:700;color:var(--txt);margin:2px}
   .mnote.play{background:var(--gold);color:#241a05;border-color:var(--gold);box-shadow:0 0 12px var(--gold2);transform:scale(1.12)}
   .mrest{display:inline-block;color:var(--muted);padding:0 3px}
+  .wkey.lit{background:linear-gradient(180deg,#ffd98a,#f0b53a)!important}
+  .bkey.lit{background:linear-gradient(180deg,#ffcf6b,#e0940f)!important}
+  /* onboarding */
+  .onb-overlay{position:fixed;inset:0;z-index:10000;background:rgba(8,9,11,.82);backdrop-filter:blur(4px);display:grid;place-items:center;padding:18px}
+  .onb-card{background:linear-gradient(150deg,#20242d,#15171c);border:1px solid var(--line);border-left:5px solid var(--red);border-radius:18px;box-shadow:var(--shadow);max-width:440px;width:100%;padding:24px 22px;animation:fade .3s}
+  .onb-dots{display:flex;gap:6px;justify-content:center;margin-bottom:16px}
+  .onb-dots span{width:8px;height:8px;border-radius:50%;background:var(--line)}
+  .onb-dots span.on{background:var(--gold);width:22px;border-radius:4px}
+  .onb-body{text-align:center;min-height:190px}
+  .onb-body .oic{font-size:52px;margin-bottom:10px}
+  .onb-body h3{color:var(--gold2);margin:0 0 8px;font-size:20px}
+  .onb-body p{color:var(--muted);font-size:14px;margin:0 auto 10px;max-width:340px;line-height:1.6}
+  .onb-nav{display:flex;align-items:center;gap:8px;margin-top:18px}
 </style>
 </head>
 <body>
@@ -351,6 +364,7 @@
     <div class="audio-badge install" id="installBtn" title="Εγκατάσταση εφαρμογής" style="display:none">⬇️ Εγκατάσταση εφαρμογής</div>
     <div class="audio-badge" id="audioBadge" title="Ενεργοποίηση ήχου">🔈 Πάτησε για ήχο</div>
     <div class="audio-badge fs" id="fsBtn" title="Πλήρης οθόνη">⛶ Πλήρης οθόνη</div>
+    <div class="audio-badge" id="helpBtn" title="Οδηγός γρήγορης εκκίνησης">❔ Οδηγός</div>
   </header>
 
   <nav class="tabs" id="tabs">
@@ -739,6 +753,20 @@
   </section>
 
   <div class="footer">🎵 ΜΟΥΣΙΚΗ ΣΧΟΛΗ 360° · Λειτουργεί εντελώς offline · Ήχος με Web Audio API · Η πρόοδός σου αποθηκεύεται τοπικά στη συσκευή σου.<br><b style="color:var(--gold2)">© by Chronis Makris</b></div>
+</div>
+
+<!-- ============ ONBOARDING (60 δευτ.) ============ -->
+<div class="onb-overlay" id="onboard" style="display:none">
+  <div class="onb-card">
+    <div class="onb-dots" id="onbDots"></div>
+    <div class="onb-body" id="onbBody"></div>
+    <div class="onb-nav">
+      <button class="ghost sm" id="onbSkip">Παράλειψη</button>
+      <div style="flex:1"></div>
+      <button class="ghost sm" id="onbPrev" style="display:none">← Πίσω</button>
+      <button class="gold" id="onbNext">Επόμενο →</button>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -1872,6 +1900,7 @@ let songToken=0, songTimers=[];
 function stopSong(){
   songToken++; songTimers.forEach(t=>clearTimeout(t)); songTimers=[];
   document.querySelectorAll(".chordtok.playing").forEach(e=>e.classList.remove("playing"));
+  const nowEl=document.getElementById("songChordNow"); if(nowEl) nowEl.textContent="";
   const pb=document.getElementById("swPlayBtn"); if(pb) pb.textContent="▶ Παίξε το τραγούδι";
 }
 /* seq: array of {name, beats, tokId?} */
@@ -1890,6 +1919,7 @@ function playSong(seq, bpm, feel, inst){
       songTimers.push(setTimeout(()=>{ if(myToken!==songToken) return;
         document.querySelectorAll(".chordtok.playing").forEach(e=>e.classList.remove("playing"));
         const el=document.getElementById(ch.tokId); if(el){ el.classList.add("playing"); el.scrollIntoView({block:"nearest",behavior:"smooth"}); }
+        const nowEl=document.getElementById("songChordNow"); if(nowEl) nowEl.textContent="🎸 "+ch.name;
       }, at));
     }
     hits.forEach(h=>{
@@ -2650,6 +2680,7 @@ const SONGS = [
 let songInst="piano", songMelTimers=[], songMelToken=0;
 function stopSongMelody(){ songMelToken++; songMelTimers.forEach(t=>clearTimeout(t)); songMelTimers=[];
   document.querySelectorAll(".mnote.play").forEach(e=>e.classList.remove("play"));
+  document.querySelectorAll("#songPiano .lit").forEach(e=>e.classList.remove("lit"));
   const b=document.getElementById("songMelBtn"); if(b) b.textContent="▶ Μελωδία (πιάνο)"; }
 function songToEvents(song, rate){
   rate=rate||1; const bd=(60/95)/rate; const ev=[]; let t=0;
@@ -2664,6 +2695,8 @@ function playSongMelody(song, rate){
     songMelTimers.push(setTimeout(()=>{ if(tok!==songMelToken) return; Audio.playPiano(e.midi,e.dur,0.85);
       document.querySelectorAll(".mnote.play").forEach(x=>x.classList.remove("play"));
       const sp=document.querySelector(`.mnote[data-i="${e.idx}"]`); if(sp){ sp.classList.add("play"); sp.scrollIntoView({block:"nearest",inline:"nearest",behavior:"smooth"}); }
+      const pk=document.querySelector(`#songPiano [data-m="${e.midi}"]`);
+      if(pk){ pk.classList.add("lit"); setTimeout(()=>pk.classList.remove("lit"), Math.min(500,e.dur*1000)); }
     }, e.t*1000)); });
   songMelTimers.push(setTimeout(()=>{ if(tok===songMelToken) stopSongMelody(); }, last*1000+300));
   awardXP(15,"έπαιξες τραγούδι"); grantAch("firstSong");
@@ -2687,7 +2720,7 @@ function openSong(id){
   const s=SONGS.find(x=>x.id===id); if(!s) return; stopSongMelody();
   document.getElementById("songTitle").textContent=s.t;
   const notesHtml=s.melody.map(([m,b],i)=> m>0?`<span class="mnote" data-i="${i}">${NOTE_LATIN[m%12]}</span>`:`<span class="mrest">·</span>`).join(" ");
-  const seq=s.chords.map(c=>({name:c,beats:s.meter}));
+  const seq=s.chords.map((c,i)=>({name:c,beats:s.meter,tokId:"sc"+i}));
   document.getElementById("songBody").innerHTML=`
     <div class="kv"><b>Τονικότητα:</b><span>${s.key}</span><b>Μέτρο:</b><span>${s.meter}/4</span>
       <b>Συγχορδίες:</b><span>${[...new Set(s.chords)].join(" · ")}</span></div>
@@ -2697,11 +2730,18 @@ function openSong(id){
       <button class="ghost sm" id="songChordBtn">🎸 Συγχορδίες (κιθάρα)</button>
       <button class="ghost sm" id="songBothBtn">🎼 Μελωδία + συγχορδίες</button>
     </div>
+    <h4>🎹 Play-along — παίξε μαζί (οι νότες φωτίζονται)</h4>
+    <div class="piano-wrap"><div class="piano" id="songPiano"></div></div>
+    <div id="songChordNow" style="text-align:center;min-height:26px;margin:4px 0 2px;font-weight:800;color:var(--gold2)"></div>
     <h4>🎵 Νότες μελωδίας</h4>
     <div class="songchart" style="line-height:2.4">${notesHtml}</div>
     <h4>🎸 Συγχορδίες ανά μέτρο</h4>
-    <div class="songchart">${s.chords.map(c=>`<span class="chordtok">${c}</span>`).join(" ")}</div>
-    <div class="tip">💡 Πάτησε <b>🐢 Αργά</b> για να μάθεις τη μελωδία βήμα-βήμα (οι νότες φωτίζονται). Μετά δοκίμασέ το στην καρτέλα «🎹 Πιάνο» ή «🎸 Κιθάρα».</div>`;
+    <div class="songchart">${s.chords.map((c,i)=>`<span class="chordtok" id="sc${i}">${c}</span>`).join(" ")}</div>
+    <div class="tip">💡 Πάτησε <b>🐢 Αργά</b> και ακολούθησε τα φωτισμένα πλήκτρα στο πιάνο. Μετά δοκίμασέ το μόνος σου στην καρτέλα «🎹 Πιάνο» ή «🎸 Κιθάρα».</div>`;
+  // build play-along mini piano covering the melody range
+  const ms=s.melody.filter(x=>x[0]>0).map(x=>x[0]); const lo=Math.min(...ms), hi=Math.max(...ms);
+  const start=12*Math.floor(lo/12); const octs=Math.max(2,Math.min(3,Math.ceil((hi-start+1)/12)));
+  buildPiano(document.getElementById("songPiano"), {start, octaves:octs, names:"latin", highlight:new Set(), root:null});
   document.getElementById("songDetail").style.display="block";
   document.getElementById("songMelBtn").onclick=()=>{ if(document.getElementById("songMelBtn").textContent[0]==="⏸"){stopSongMelody();return;} playSongMelody(s,1); };
   document.getElementById("songSlowBtn").onclick=()=>playSongMelody(s,0.6);
@@ -2812,6 +2852,36 @@ function initBackup(){
 }
 
 /* =========================================================================
+   ONBOARDING — γρήγορη ξενάγηση 60 δευτ. για νέους χρήστες
+   ========================================================================= */
+const ONB=[
+  {ic:"👋",h:"Καλωσήρθες!",p:"Η <b>ΜΟΥΣΙΚΗ ΣΧΟΛΗ 360°</b> είναι η προσωπική σου σχολή για <b>πιάνο & κιθάρα</b> — από το μηδέν έως επαγγελματίας. Λειτουργεί εντελώς <b>offline</b>."},
+  {ic:"🔊",h:"Άναψε τον ήχο",p:"Κάθε νότα ακούγεται στα αλήθεια! Οι browsers ξεκινούν τον ήχο μόνο μετά από άγγιγμα — πάτησε το κουμπί για δοκιμή.",action:{label:"🔈 Ενεργοποίηση ήχου",fn:()=>{ enableAudio(); Audio.playPiano(60,0.6,0.85); }}},
+  {ic:"🎓",h:"Ξεκίνα από τα Μαθήματα",p:"Δομημένη πορεία βήμα-βήμα, χωριστά για πιάνο και κιθάρα. Μόλις <b>15-20 λεπτά τη μέρα</b> κάνουν τη διαφορά."},
+  {ic:"🎼",h:"Παίξε & κούρδισε",p:"Στα <b>🎼 Τραγούδια</b> παίζεις γνωστά κομμάτια με play-along (τα πλήκτρα φωτίζονται). Στο <b>🎯 Κουρδιστήρι</b> κουρδίζεις με το μικρόφωνο."},
+  {ic:"🔥",h:"Κέρδισε XP & σερί",p:"Μαζεύεις πόντους, ανεβαίνεις <b>επίπεδα</b> και ξεκλειδώνεις <b>επιτεύγματα</b>. Κράτα το καθημερινό σου σερί και μη σταματάς!"}
+];
+let onbStep=0;
+function renderOnb(){
+  const s=ONB[onbStep];
+  document.getElementById("onbDots").innerHTML=ONB.map((_,i)=>`<span class="${i===onbStep?'on':''}"></span>`).join("");
+  document.getElementById("onbBody").innerHTML=`<div class="oic">${s.ic}</div><h3>${s.h}</h3><p>${s.p}</p>`+
+    (s.action?`<button class="gold" id="onbAction">${s.action.label}</button>`:"");
+  if(s.action) document.getElementById("onbAction").onclick=()=>{ s.action.fn(); const b=document.getElementById("onbAction"); b.textContent="✓ Έγινε!"; b.disabled=true; };
+  document.getElementById("onbPrev").style.display=onbStep>0?"":"none";
+  document.getElementById("onbNext").textContent=onbStep===ONB.length-1?"Ξεκίνα! 🎵":"Επόμενο →";
+}
+function openOnb(){ onbStep=0; document.getElementById("onboard").style.display="grid"; renderOnb(); }
+function closeOnb(){ document.getElementById("onboard").style.display="none"; Store.data.onboarded=true; Store.save(); }
+function initOnboarding(){
+  document.getElementById("onbNext").onclick=()=>{ if(onbStep<ONB.length-1){ onbStep++; renderOnb(); } else closeOnb(); };
+  document.getElementById("onbPrev").onclick=()=>{ if(onbStep>0){ onbStep--; renderOnb(); } };
+  document.getElementById("onbSkip").onclick=closeOnb;
+  document.getElementById("helpBtn").onclick=openOnb;
+  if(!Store.data.onboarded) setTimeout(openOnb, 500);
+}
+
+/* =========================================================================
    INIT
    ========================================================================= */
 function init(){
@@ -2829,6 +2899,7 @@ function init(){
   renderRecorder("pianoRec","piano"); renderRecorder("guitarRec","guitar");
   initVideos(); initAnalyze();
   renderSongList(); initTuner(); initBackup();
+  initOnboarding();
 }
 init();
 </script>
