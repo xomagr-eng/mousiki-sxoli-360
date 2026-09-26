@@ -348,6 +348,24 @@
   .onb-body h3{color:var(--gold2);margin:0 0 8px;font-size:20px}
   .onb-body p{color:var(--muted);font-size:14px;margin:0 auto 10px;max-width:340px;line-height:1.6}
   .onb-nav{display:flex;align-items:center;gap:8px;margin-top:18px}
+  /* instrument fullscreen / play-big mode */
+  /* Πλήρης οθόνη ΜΟΝΟ του οργάνου — εστίαση, κρυμμένα κείμενα/τίτλος/χειριστήρια-πλην-βασικών */
+  .card.inst-max{position:fixed;inset:0;z-index:9998;border-radius:0;border:0;margin:0;overflow:hidden;display:flex;flex-direction:column;background:radial-gradient(1100px 600px at 50% -160px,#1a1c22,var(--bg))}
+  .card.inst-max > h2{display:none}
+  .card.inst-max .body{flex:1;display:flex;flex-direction:column;justify-content:center;gap:10px;padding:10px 12px}
+  .card.inst-max .lead,.card.inst-max .fs-hide,.card.inst-max .tip,.card.inst-max .rec-bar,.card.inst-max #pInfo,.card.inst-max #gInfo{display:none!important}
+  .card.inst-max .btnrow{justify-content:center;flex-wrap:wrap;gap:8px;margin:0}
+  .card.inst-max .btnrow .fld{font-size:10px;margin-bottom:2px}
+  .card.inst-max select{padding:7px 9px;font-size:13px}
+  .card.inst-max .piano-wrap{flex:1;min-height:170px;padding:0;display:flex;align-items:center}
+  .card.inst-max .piano{height:100%;max-height:560px;min-height:170px}
+  .card.inst-max .wkey{min-width:52px}
+  .card.inst-max .bkey{height:62%}
+  .card.inst-max .fret-wrap{flex:1;display:flex;align-items:center;overflow:auto}
+  .card.inst-max .fretboard td.cell,.card.inst-max .fretboard td.open{height:min(9vh,68px);min-height:34px}
+  .card.inst-max .fretboard .dot{width:32px;height:32px;font-size:13px}
+  .card.inst-max .kb{display:none}
+  .inst-exit{position:fixed;top:12px;right:14px;z-index:9999;background:linear-gradient(135deg,var(--red),#a30009);color:#fff;border:none;border-radius:12px;padding:10px 16px;font-weight:800;font-size:14px;cursor:pointer;box-shadow:0 6px 16px rgba(227,6,19,.4)}
 </style>
 </head>
 <body>
@@ -443,6 +461,7 @@
       <h2><span class="i">🎹</span> Διαδραστικό Πιάνο</h2>
       <div class="body">
         <p class="lead">Πάτησε τα πλήκτρα με το ποντίκι/δάχτυλο ή με το πληκτρολόγιο. Επίλεξε συγχορδία ή κλίμακα για να φωτιστούν οι νότες.</p>
+        <div class="btnrow fs-hide"><button class="gold sm" id="pFull">⛶ Πλήρης οθόνη — παίξε μεγάλα</button></div>
         <div class="btnrow">
           <div><label class="fld">Οκτάβες</label>
             <select id="pOct"><option value="2">2 οκτάβες</option><option value="3" selected>3 οκτάβες</option><option value="4">4 οκτάβες</option></select>
@@ -475,6 +494,7 @@
       <h2><span class="i">🎸</span> Διαδραστική Κιθάρα (ταστιέρα)</h2>
       <div class="body">
         <p class="lead">Κούρδισμα Mi (EADGBE). Πάτησε σε ένα τάστο για να ακούσεις τη νότα. Επίλεξε συγχορδία για να δεις το «πάτημα» (δαχτυλιές).</p>
+        <div class="btnrow fs-hide"><button class="gold sm" id="gFull">⛶ Πλήρης οθόνη — παίξε μεγάλα</button></div>
         <div class="btnrow">
           <div><label class="fld">Τάστα</label>
             <select id="gFrets"><option value="12" selected>0–12</option><option value="15">0–15</option><option value="5">0–5 (αρχάριοι)</option></select>
@@ -2882,6 +2902,35 @@ function initOnboarding(){
 }
 
 /* =========================================================================
+   INSTRUMENT FULLSCREEN — «παίξε μεγάλα» για πιάνο & κιθάρα
+   ========================================================================= */
+let instMaxKind=null;
+function ensureExitBtn(card, kind){
+  let ex=card.querySelector(".inst-exit");
+  if(!ex){ ex=document.createElement("button"); ex.className="inst-exit"; ex.textContent="✕ Έξοδος"; card.appendChild(ex); ex.onclick=()=>instMin(kind); }
+}
+function instMax(kind){
+  const card=document.querySelector("#"+kind+" .card"); if(!card) return;
+  if(!Audio.ready) enableAudio();
+  instMaxKind=kind; card.classList.add("inst-max"); ensureExitBtn(card,kind);
+  const req=card.requestFullscreen||card.webkitRequestFullscreen||card.msRequestFullscreen;
+  if(req){ try{ const pr=req.call(card); if(pr&&pr.catch) pr.catch(()=>{}); }catch(e){} }
+  if(kind==="piano") renderPiano(); else renderGuitar();
+  try{ if(screen.orientation&&screen.orientation.lock){ const lp=screen.orientation.lock("landscape"); if(lp&&lp.catch) lp.catch(()=>{}); } }catch(e){}
+}
+function instMin(kind){
+  kind=kind||instMaxKind; instMaxKind=null;
+  const card=kind?document.querySelector("#"+kind+" .card"):null;
+  if(card) card.classList.remove("inst-max");
+  const ex=document.exitFullscreen||document.webkitExitFullscreen||document.msExitFullscreen;
+  if((document.fullscreenElement||document.webkitFullscreenElement)&&ex){ try{ const pr=ex.call(document); if(pr&&pr.catch) pr.catch(()=>{}); }catch(e){} }
+  try{ if(screen.orientation&&screen.orientation.unlock) screen.orientation.unlock(); }catch(e){}
+  if(kind==="piano") renderPiano(); else if(kind==="guitar") renderGuitar();
+}
+document.addEventListener("fullscreenchange",()=>{ if(!document.fullscreenElement && instMaxKind) instMin(instMaxKind); });
+document.addEventListener("webkitfullscreenchange",()=>{ if(!document.webkitFullscreenElement && instMaxKind) instMin(instMaxKind); });
+
+/* =========================================================================
    INIT
    ========================================================================= */
 function init(){
@@ -2900,6 +2949,8 @@ function init(){
   initVideos(); initAnalyze();
   renderSongList(); initTuner(); initBackup();
   initOnboarding();
+  document.getElementById("pFull").onclick=()=>instMax("piano");
+  document.getElementById("gFull").onclick=()=>instMax("guitar");
 }
 init();
 </script>
