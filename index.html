@@ -353,7 +353,7 @@
   .card.inst-max{position:fixed;inset:0;z-index:9998;border-radius:0;border:0;margin:0;overflow:hidden;display:flex;flex-direction:column;background:radial-gradient(1100px 600px at 50% -160px,#1a1c22,var(--bg))}
   .card.inst-max > h2{display:none}
   .card.inst-max .body{flex:1;display:flex;flex-direction:column;justify-content:center;gap:10px;padding:10px 12px}
-  .card.inst-max .lead,.card.inst-max .fs-hide,.card.inst-max .tip,.card.inst-max .rec-bar,.card.inst-max #pInfo,.card.inst-max #gInfo{display:none!important}
+  .card.inst-max .lead,.card.inst-max .fs-hide,.card.inst-max .tip,.card.inst-max .rec-bar,.card.inst-max #pInfo,.card.inst-max #gInfo,.card.inst-max .song-hide{display:none!important}
   .card.inst-max .btnrow{justify-content:center;flex-wrap:wrap;gap:8px;margin:0}
   .card.inst-max .btnrow .fld{font-size:10px;margin-bottom:2px}
   .card.inst-max select{padding:7px 9px;font-size:13px}
@@ -2742,22 +2742,25 @@ function openSong(id){
   const notesHtml=s.melody.map(([m,b],i)=> m>0?`<span class="mnote" data-i="${i}">${NOTE_LATIN[m%12]}</span>`:`<span class="mrest">·</span>`).join(" ");
   const seq=s.chords.map((c,i)=>({name:c,beats:s.meter,tokId:"sc"+i}));
   document.getElementById("songBody").innerHTML=`
-    <div class="kv"><b>Τονικότητα:</b><span>${s.key}</span><b>Μέτρο:</b><span>${s.meter}/4</span>
+    <div class="kv song-hide"><b>Τονικότητα:</b><span>${s.key}</span><b>Μέτρο:</b><span>${s.meter}/4</span>
       <b>Συγχορδίες:</b><span>${[...new Set(s.chords)].join(" · ")}</span></div>
     <div class="btnrow">
       <button class="gold" id="songMelBtn">▶ Μελωδία (πιάνο)</button>
       <button class="ghost sm" id="songSlowBtn">🐢 Αργά (μάθε το)</button>
       <button class="ghost sm" id="songChordBtn">🎸 Συγχορδίες (κιθάρα)</button>
       <button class="ghost sm" id="songBothBtn">🎼 Μελωδία + συγχορδίες</button>
+      <button class="gold sm fs-hide" id="songFull">⛶ Πλήρης οθόνη — play-along</button>
     </div>
-    <h4>🎹 Play-along — παίξε μαζί (οι νότες φωτίζονται)</h4>
+    <h4 class="fs-hide">🎹 Play-along — παίξε μαζί (οι νότες φωτίζονται)</h4>
     <div class="piano-wrap"><div class="piano" id="songPiano"></div></div>
     <div id="songChordNow" style="text-align:center;min-height:26px;margin:4px 0 2px;font-weight:800;color:var(--gold2)"></div>
-    <h4>🎵 Νότες μελωδίας</h4>
-    <div class="songchart" style="line-height:2.4">${notesHtml}</div>
-    <h4>🎸 Συγχορδίες ανά μέτρο</h4>
-    <div class="songchart">${s.chords.map((c,i)=>`<span class="chordtok" id="sc${i}">${c}</span>`).join(" ")}</div>
-    <div class="tip">💡 Πάτησε <b>🐢 Αργά</b> και ακολούθησε τα φωτισμένα πλήκτρα στο πιάνο. Μετά δοκίμασέ το μόνος σου στην καρτέλα «🎹 Πιάνο» ή «🎸 Κιθάρα».</div>`;
+    <div class="song-hide">
+      <h4>🎵 Νότες μελωδίας</h4>
+      <div class="songchart" style="line-height:2.4">${notesHtml}</div>
+      <h4>🎸 Συγχορδίες ανά μέτρο</h4>
+      <div class="songchart">${s.chords.map((c,i)=>`<span class="chordtok" id="sc${i}">${c}</span>`).join(" ")}</div>
+      <div class="tip">💡 Πάτησε <b>🐢 Αργά</b> και ακολούθησε τα φωτισμένα πλήκτρα στο πιάνο. Μετά δοκίμασέ το μόνος σου στην καρτέλα «🎹 Πιάνο» ή «🎸 Κιθάρα».</div>
+    </div>`;
   // build play-along mini piano covering the melody range
   const ms=s.melody.filter(x=>x[0]>0).map(x=>x[0]); const lo=Math.min(...ms), hi=Math.max(...ms);
   const start=12*Math.floor(lo/12); const octs=Math.max(2,Math.min(3,Math.ceil((hi-start+1)/12)));
@@ -2767,6 +2770,7 @@ function openSong(id){
   document.getElementById("songSlowBtn").onclick=()=>playSongMelody(s,0.6);
   document.getElementById("songChordBtn").onclick=()=>{ if(!Audio.ready)enableAudio(); playSong(seq,95,"strum","guitar"); };
   document.getElementById("songBothBtn").onclick=()=>{ if(!Audio.ready)enableAudio(); playSong(seq,95,"arpeggio","guitar"); playSongMelody(s,1); };
+  document.getElementById("songFull").onclick=()=>instMax("song");
   document.getElementById("songDetail").scrollIntoView({behavior:"smooth"});
 }
 
@@ -2905,23 +2909,24 @@ function initOnboarding(){
    INSTRUMENT FULLSCREEN — «παίξε μεγάλα» για πιάνο & κιθάρα
    ========================================================================= */
 let instMaxKind=null;
+function cardForKind(kind){ return kind==="song"?document.getElementById("songDetail"):document.querySelector("#"+kind+" .card"); }
 function ensureExitBtn(card, kind){
   let ex=card.querySelector(".inst-exit");
   if(!ex){ ex=document.createElement("button"); ex.className="inst-exit"; ex.textContent="✕ Έξοδος"; card.appendChild(ex); ex.onclick=()=>instMin(kind); }
 }
 function instMax(kind){
-  const card=document.querySelector("#"+kind+" .card"); if(!card) return;
+  const card=cardForKind(kind); if(!card) return;
   if(!Audio.ready) enableAudio();
-  instMaxKind=kind; card.classList.add("inst-max"); ensureExitBtn(card,kind);
+  instMaxKind=kind; card.classList.add("inst-max"); if(kind==="song") card.classList.add("song-focus"); ensureExitBtn(card,kind);
   const req=card.requestFullscreen||card.webkitRequestFullscreen||card.msRequestFullscreen;
   if(req){ try{ const pr=req.call(card); if(pr&&pr.catch) pr.catch(()=>{}); }catch(e){} }
-  if(kind==="piano") renderPiano(); else renderGuitar();
+  if(kind==="piano") renderPiano(); else if(kind==="guitar") renderGuitar();
   try{ if(screen.orientation&&screen.orientation.lock){ const lp=screen.orientation.lock("landscape"); if(lp&&lp.catch) lp.catch(()=>{}); } }catch(e){}
 }
 function instMin(kind){
   kind=kind||instMaxKind; instMaxKind=null;
-  const card=kind?document.querySelector("#"+kind+" .card"):null;
-  if(card) card.classList.remove("inst-max");
+  const card=kind?cardForKind(kind):null;
+  if(card){ card.classList.remove("inst-max"); card.classList.remove("song-focus"); }
   const ex=document.exitFullscreen||document.webkitExitFullscreen||document.msExitFullscreen;
   if((document.fullscreenElement||document.webkitFullscreenElement)&&ex){ try{ const pr=ex.call(document); if(pr&&pr.catch) pr.catch(()=>{}); }catch(e){} }
   try{ if(screen.orientation&&screen.orientation.unlock) screen.orientation.unlock(); }catch(e){}
