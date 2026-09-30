@@ -591,9 +591,10 @@
           <div><label class="fld">Θεμέλιος</label><select id="scRoot"></select></div>
           <div><label class="fld">Τύπος κλίμακας</label><select id="scType"></select></div>
           <div style="align-self:flex-end"><button class="gold sm" id="scPlay">▶ Παίξε ανιόντα/κατιόντα</button></div>
+          <div style="align-self:flex-end"><button class="gold sm fs-hide" id="scFull">⛶ Πλήρης οθόνη</button></div>
         </div>
-        <div id="scInfo"></div>
-        <h4>Στο πιάνο</h4>
+        <div id="scInfo" class="song-hide"></div>
+        <h4 class="fs-hide">Στο πιάνο</h4>
         <div class="piano-wrap"><div class="piano" id="scPiano"></div></div>
         <div id="scNotes" class="tip"></div>
       </div>
@@ -1481,6 +1482,7 @@ function initScales(){
   const t=document.getElementById("scType"); t.innerHTML=Object.keys(SCALE_TYPES).map(k=>`<option value="${k}">${SCALE_TYPES[k].label}</option>`).join("");
   r.addEventListener("change",renderScale); t.addEventListener("change",renderScale);
   document.getElementById("scPlay").addEventListener("click",playScale);
+  document.getElementById("scFull").addEventListener("click",()=>instMax("scales"));
 }
 function scaleMidis(){
   const root=+document.getElementById("scRoot").value;
